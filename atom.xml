@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-01-16T12:28:14.000Z</updated>
+  <updated>2017-01-16T12:30:39.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/01/16/%E6%A8%A1%E6%8B%9FHTTP%E8%AF%B7%E6%B1%82%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%89%8B%E5%86%8C/"/>
     <id>http://yoursite.com/2017/01/16/模拟HTTP请求工具安装配置手册/</id>
     <published>2017-01-16T12:20:12.000Z</published>
-    <updated>2017-01-16T12:28:14.000Z</updated>
+    <updated>2017-01-16T12:30:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>近期做网络测试，需要给网络加一定的压力，再测试此压力下的网络情况，提出的需求是：</p>
 <blockquote>
@@ -55,6 +55,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /root/httpdownload$ vi /root/httpdownload/config.txtIP:http://10.0.251.180/logs/filesize1:500Kcount1:1filesize2:1Mcount1:2</div></pre></td></tr></table></figure>
 <p>第一项是下载服务器文件IP；第二项是下载文件大小；第三项是同时下载该大小文件的数量；可配置同时并发下载不同大小和数量的文件。需要将“filesize”和“count”的序号依次递增。</p>
 <h3 id="2-2运行curls-sh"><a href="#2-2运行curls-sh" class="headerlink" title="2.2运行curls.sh"></a>2.2运行curls.sh</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /root/httpdownload/curls.sh</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/RanWX/netMonitor/tree/master/httpdownload" target="_blank" rel="external">相关代码下载</a></p>
 ]]></content>
     
     <summary type="html">
