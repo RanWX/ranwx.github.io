@@ -1,28 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Rosy&#39;s</title>
-  
-  <link href="/atom.xml" rel="self"/>
-  
-  <link href="http://yoursite.com/"/>
-  <updated>2017-02-27T14:33:14.000Z</updated>
-  <id>http://yoursite.com/</id>
-  
-  <author>
-    <name>Rosy</name>
-    
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>docker搭建elk镜像</title>
-    <link href="http://yoursite.com/2017/02/27/docker%E6%90%AD%E5%BB%BAelk%E9%95%9C%E5%83%8F/"/>
-    <id>http://yoursite.com/2017/02/27/docker搭建elk镜像/</id>
-    <published>2017-02-27T03:34:49.000Z</published>
-    <updated>2017-02-27T14:33:14.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>使用elk(elasticsearch+logstash+kibana)不需要openssh，搭建openssh是为了方便往elasticsearch里添加数据。</p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> docker搭建elk镜像 | Rosy's</title><meta name="description" content="docker搭建elk镜像 - Rosy"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/casual.css"><link rel="stylesheet" href="/css/semantic.min.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Rosy's"></head><body><div class="sidebar"><div class="ui vertical inverted menu"><div class="h100"></div><h3 class="ui inverted aligned icon header"><div class="content"><a href="/" class="title-link">ROSY'S</a></div></h3><div class="h50"></div><div class="side-nav"><a href="/" target="_self" class="item">HOME<i class="icon home"></i></a><a href="/archives" target="_self" class="item">ARCHIVE<i class="icon archive"></i></a><a href="/tags" target="_self" class="item">TAGS<i class="icon tags"></i></a><a href="/about" target="_self" class="item">INFO<i class="icon info"></i></a><a href="/atom.xml" target="_self" class="item">RSS<i class="icon rss"></i></a></div><div class="item"><div class="ui inverted transparent icon input"><input type="text" placeholder="Search..." class="st-default-search-input"><i class="search icon"></i></div></div><div class="h50"></div></div><div class="h50 mq"><a class="ui teal big label"><i class="content icon"></i></a></div><div class="author-info"><a href="/" class="img-link"><img src="/me.jpeg" class="author-photo ui tiny circular image"></a><h4 class="ui aligned icon header"><div class="content">Rosy</div></h4><p class="author-desc">常常将自己分裂成三个人用于玩斗地主的双子女 | 热衷于烹饪 | 喜欢刘亦菲</p><div class="social-outer"><div class="social-inner"><a href="http://github.com/RanWX" target="_blank" class="social-link"><i class="icon github"></i></a><a href="http://weibo.com/u/2176147782?refer_flag=1005055010_&amp;is_all=1" target="_blank" class="social-link"><i class="icon weibo"></i></a></div></div></div></div><div class="main"><div class="wrap"><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">docker搭建elk镜像</h1><div class="post-info"><div class="post-date"><h6 class="ui header"><i class="calendar icon"></i><div class="content">Feb 27, 2017</div></h6></div></div><div class="post-content"><p>使用elk(elasticsearch+logstash+kibana)不需要openssh，搭建openssh是为了方便往elasticsearch里添加数据。</p>
 <p><strong>因为安装过程用到了service，亲测centos7的基础镜像不能用。用service起的命令可以手动起，也可以安装centos7.2版本，然后用 <em>–privileged</em> 赋予容器root权限</strong></p>
 <p>##1.安装openssh</p>
 <p>###1.1创建容器</p>
@@ -74,175 +50,5 @@
 <p>在网页中打开kibana，在setting中选择关键字“twitter”可以看见我们添加的数据：<br><img src="#http://7ycyh7.com1.z1.glb.clouddn.com/屏幕快照%202017-02-27%20下午9.18.41.png" alt="twitter"></p>
 <p>至此，elk的镜像便搭好了，至于elasticsearch和kibana的用法，会另起一篇叨叨。</p>
 <p>本文参考了以下博客：<br>1.<a href="http://www.cnblogs.com/zhenyuyaodidiao/p/4948000.html" target="_blank" rel="external">http://www.cnblogs.com/zhenyuyaodidiao/p/4948000.html</a><br>2.<a href="http://www.cnblogs.com/zhenyuyaodidiao/p/4512249.html" target="_blank" rel="external">http://www.cnblogs.com/zhenyuyaodidiao/p/4512249.html</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;使用elk(elasticsearch+logstash+kibana)不需要openssh，搭建openssh是为了方便往elasticsearch里添加数据。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;因为安装过程用到了service，亲测centos7的基础镜像不能用。用serv
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="http://yoursite.com/tags/docker/"/>
-    
-      <category term="elk" scheme="http://yoursite.com/tags/elk/"/>
-    
-      <category term="openssh" scheme="http://yoursite.com/tags/openssh/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mtr丢包率分析</title>
-    <link href="http://yoursite.com/2017/02/15/mtr%E4%B8%A2%E5%8C%85%E7%8E%87%E5%88%86%E6%9E%90/"/>
-    <id>http://yoursite.com/2017/02/15/mtr丢包率分析/</id>
-    <published>2017-02-15T13:00:15.000Z</published>
-    <updated>2017-02-16T07:46:20.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>在Linux下，我们一般用ping来判断网络的丢包和延迟，用traceroute来跟踪路由路径。mtr将ping和traceroute结合起来，既能判断网络路由路径，又能得到丢包和延迟等信息。</p>
-<p>mtr的用法网上随便一搜就一大堆：<a href="https://www.mankier.com/8/mtr" target="_blank" rel="external">https://www.mankier.com/8/mtr</a></p>
-<p>mtr的数据一般长这样：</p>
-<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/屏幕快照%202017-02-15%20下午10.15.06.png" alt="mtr数据图"></p>
-<p>其中host为“???”的地方表示该节点不让ping。</p>
-<p>Loss%:表示该节点的丢包率；</p>
-<p>Snt:表示每秒发送数据包的数量，默认值是10 可以通过参数 <em>-c</em> 来指定数量；</p>
-<p>Last:表示最近一次的返回延时；</p>
-<p>Avg:表示延时平均值这个应该是发送ping包的平均延时；</p>
-<p>Best:表示最好或者说延时最短的值；</p>
-<p>Wrst:表示最差或者说时延最常的值；</p>
-<p>StDev:表示标准偏差。</p>
-<p>然后我对各节点丢包率无法理解：1.前n-1行的丢包率相加和最后一行的丢包率不想等；2.某些点的丢包率超过了最后一行的丢包率；3.ping其中丢包率高的节点，ping的丢包率和mtr结果在该点的丢包率差别极大。</p>
-<p>针对这些问题，百度，Google提供了很多很有参考价值的信息，比如：<br><a href="https://www.linode.com/docs/networking/diagnostics/diagnosing-network-issues-with-mtr/" target="_blank" rel="external">https://www.linode.com/docs/networking/diagnostics/diagnosing-network-issues-with-mtr/</a></p>
-<p><a href="http://serverfault.com/questions/585862/why-mtr-is-much-faster-than-traceroute" target="_blank" rel="external">http://serverfault.com/questions/585862/why-mtr-is-much-faster-than-traceroute</a></p>
-<p><a href="http://serverfault.com/questions/260414/how-to-interpret-traceroute-output-of-mtr" target="_blank" rel="external">http://serverfault.com/questions/260414/how-to-interpret-traceroute-output-of-mtr</a></p>
-<p><a href="http://superuser.com/questions/591804/where-is-packet-loss-occuring-interpreting-mtr" target="_blank" rel="external">http://superuser.com/questions/591804/where-is-packet-loss-occuring-interpreting-mtr</a></p>
-<p>对于中间节点丢包总结起来大约是这样说的：该节点本身<strong>网络不好</strong>；ICMP<strong>速率限制</strong>引起了数据包的丢失。判断方法是：</p>
-<p>1.如果某节点有丢包，但是下一节点没有丢包，则证明该节点是ICMP速率限制。解决方法可以增加参数 <em>-i</em>（设置ICMP发送一次包的时间，默认为1秒）。</p>
-<p>2.如果连续几个节点都存在丢包，则这些节点存在因网络不好而产生的丢包，但无法判断是否存在因速率限制而产生的丢包。</p>
-<p>3.如果最后一个节点存在丢包，则这个节点的丢包率看做整条目录的丢包率。</p>
-<p>但是以上判断方法是如何得到的，网上就没有很多的说明了。只好从mtr的原理开始研究。</p>
-<p>从网络抓包开始。分别对同一个目标地址进行ping和mtr，抓取这两种操作时的网络发icmp包情况如下：</p>
-<p>mtr的路径和抓包：</p>
-<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/屏幕快照%202017-02-15%20下午11.22.58.png" alt=""></p>
-<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/屏幕快照%202017-02-15%20下午11.23.45.png" alt=""></p>
-<p>ping的抓包：</p>
-<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/屏幕快照%202017-02-15%20下午11.28.57.png" alt=""></p>
-<p>由ping和mtr的抓包情况图可以看出：<br>mtr对目标地址发送一个icmp包，然后在一个节点返回一个icmp包；然后再对目标节点发送一个icmp包，再第二个节点返回一个icmp包；一直到最后一个节点返回icmp包，这样一次发包完成。参数 <em>-i</em> 便是控制这一过程时间的，默认是1秒钟。当节点比较多的时候，会出现发送了很多icmp包，之前所说的增加 <em>-i</em> 的参数值，能够降低这个发包频率，以达到避免被icmp限速的目的。如果其中某个节点返回的包丢掉了，则在该节点上产生了丢包率。<br>ping的icmp发包过程是本地发送给目标地址一个icmp包，然后目标地址返回一个icmp包。中通节点没有返回任何icmp包。如果目标地址返回的包丢失，则产生丢包率。</p>
-<p>由抓包可以看出，mtr的发包原理和traceroute类似，如下图：</p>
-<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/mtr1.png" alt="mtr图"></p>
-<p>其中TTL(Time To Live)指定IP包被路由器丢弃之前允许通过的最大网段数量，当TTL减少为0时，路由器将会丢弃收到的TTL=0的icmp包并向icmp包的发送者发送 <em>ICMP time exceeded</em> 消息。假设本地mtr目标主机中途经过了3个节点，本地向目标主机发送一个icmp包，TTL=1，遇到第一个路由的时候，TTL变为0，向本地返回 <em>ICMP time exceeded in-transit</em> 消息；然后本地再向目标主机发送一个icmp包，TTL=2，再遇到第二个路由的时候TTL变为哦，返回 <em>ICMP time exceeded in-transit</em>；以此类推；当icmp包经过n跳到达最终的目标地址，则返回 <em>ICMP echo reply</em> 消息。如果某个阶段返回的icmp包丢失，则在此节点产生了丢包。</p>
-<p>按照这个原理，理论上当某个节点的ip地址产生较大丢包的时候，我们调整发包间隔，使发包速率不大于ping的发包速率，那么这个节点mtr得到的丢包率应该和直接ping这个节点得到的丢包率相等。然而事实上mtr的丢包率远大于ping这个节点的丢包率。问题出在ping和mtr返回的icmp包上。</p>
-<p>对于ping，本地给目标地址发送一个icmp包，如果目标主机收到了这个包，则返回一个类型为00的icmp (“ICMP echo reply”)。</p>
-<p>对于mtr，是hop by hop 的ping，在每个节点因为TTL=0而返回一个icmp包，此时返回的icmp包类型是110(“ICMP time exceeded”)，到最后一个节点返回一个跟ping类似的icmp包(“ICMP echo reply”)，如果某个路由的规则对类型为110的icmp进行了限制，则可能导致该节点产生丢包，而ping该节点返回的类型为00的icmp包则没有影响，因此ping不会产生丢包。或者某一个路由为了防止icmp包攻击，只开放了ping发出的字段的icmp包。如果某一个节点因为icmp限制而产生丢包，而下一节点不对110类型的icmp包做限制，所以下一节点不产生丢包。这就是网上所说的<strong>如果本节点丢包，接下来的节点没有丢包，则该节点可能是路由限速导致的丢包，和网络好坏没有关系</strong>。另外，除了对110包的限制，还有可能返回路径和发包路径不一致，即返回路过了别的节点，那个节点对icmp限制了，但是mtr不会打印出来。这就是网上建议的<strong>两个方向进行监控</strong>。当mtr发包到达最后一个节点（即目标主机），主机正常返回一个 <em>ICMP echo reply</em>，相当于一个正常的ping过程，因此<strong>最后一跳存在丢包率，可以看做整个链路的丢包率</strong>。</p>
-<p>对网络路由路径和中间节点丢包率的计算，常用工具都用了TTL机制，不知道是否有其他工具能够更加准确的测试，这个有待调查。<br>看到一个网站上对mtr丢包率问题的回答，其中有这样一段话：</p>
-<p><em>As for assigning fault based on traceroutes: I’ve professionally done senior-level network operations for over a decade, with full access to switches and routers (error counts, traffic levels, cache flows – all manners of stats and metrics – giving me visibility well beyond what a simple traceroute could provide, yet determining where packet loss was occurring to a host on a remote network was still an inexact art, mostly because the return path from the other host was obscured: Unless I had a traceroute back to me from the remote host, I could only guess at how return traffic was getting back to my workstation. I shall suggest that beyond the first or second hop in your traceroutes, there’s not much you can do (or make meaningful deductions) with ping and traceroute.</em></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;在Linux下，我们一般用ping来判断网络的丢包和延迟，用traceroute来跟踪路由路径。mtr将ping和traceroute结合起来，既能判断网络路由路径，又能得到丢包和延迟等信息。&lt;/p&gt;
-&lt;p&gt;mtr的用法网上随便一搜就一大堆：&lt;a href=&quot;https:/
-    
-    </summary>
-    
-    
-      <category term="网络" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C/"/>
-    
-      <category term="mtr" scheme="http://yoursite.com/tags/mtr/"/>
-    
-      <category term="丢包率" scheme="http://yoursite.com/tags/%E4%B8%A2%E5%8C%85%E7%8E%87/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>模拟HTTP请求工具安装配置手册</title>
-    <link href="http://yoursite.com/2017/01/16/%E6%A8%A1%E6%8B%9FHTTP%E8%AF%B7%E6%B1%82%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%89%8B%E5%86%8C/"/>
-    <id>http://yoursite.com/2017/01/16/模拟HTTP请求工具安装配置手册/</id>
-    <published>2017-01-16T12:20:12.000Z</published>
-    <updated>2017-01-16T12:30:39.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>近期做网络测试，需要给网络加一定的压力，再测试此压力下的网络情况，提出的需求是：</p>
-<blockquote>
-<ul>
-<li>模拟http请求，能够返回不同的大小的页面</li>
-<li>自由调节压力，不需要将带宽跑满</li>
-<li>轻量级</li>
-</ul>
-</blockquote>
-<p>在网上调研了一些工具，例如iperf之类的，都是测带宽用的，换言之都会将带宽跑满，于是便自己搭了个简易的服务器，在服务器上造出不同大小的文件，然后在客户端进行curl请求，以造成不同的压力。</p>
-<h2 id="1-服务器端"><a href="#1-服务器端" class="headerlink" title="1.服务器端"></a>1.服务器端</h2><h3 id="1-1系统环境"><a href="#1-1系统环境" class="headerlink" title="1.1系统环境"></a>1.1系统环境</h3><p>centos7</p>
-<h3 id="1-2安装nginx"><a href="#1-2安装nginx" class="headerlink" title="1.2安装nginx"></a>1.2安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[$ yum install nginx</div></pre></td></tr></table></figure>
-<p>如果这一步找不到合适的源可以安装第三方软件库：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum -y install epel-release</div></pre></td></tr></table></figure>
-<p>卸载该软件库为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum -y remove epel-releas</div></pre></td></tr></table></figure>
-<h3 id="1-3配置nginx"><a href="#1-3配置nginx" class="headerlink" title="1.3配置nginx"></a>1.3配置nginx</h3><p>打开配置文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/nginx/nginx.conf</div></pre></td></tr></table></figure>
-<p>修改配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">server &#123;listen       80 default_server; #此处为服务器监听端口，默认为80端口。listen       [::]:80 default_server; #此处为服务器监听端口，默认为80端口。server_name  _;root         /usr/share/nginx/html;   # Load configuration files for the default server block.include /etc/nginx/default.d/*.conf;location / &#123;autoindex on; #此处为开启服务器端目录浏览功能autoindex_exact_size on; #此处为显示目录中文件的大小autoindex_localtime on; #此处为显示目录中文件的创建时间        &#125;error_page 404 /404.html;location = /40x.html &#123;        &#125;error_page 500 502 503 504 /50x.html;location = /50x.html &#123;        &#125;</div></pre></td></tr></table></figure>
-<p>修改好后保存退出，并检查配置文件的语法是否正确。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ nginx -t -c /etc/nginx/nginx.conf</div><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is oknginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div></pre></td></tr></table></figure>
-<p>启动nginx</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /usr/sbin/nginx -c /etc/nginx/nginx.conf</div></pre></td></tr></table></figure>
-<h3 id="1-4服务器端造数据"><a href="#1-4服务器端造数据" class="headerlink" title="1.4服务器端造数据"></a>1.4服务器端造数据</h3><p>进入配置文件中的root文件夹root/usr/share/nginx/html，添加一个存放自己数据的文件夹</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /usr/share/nginx/html$ mkdir logs$ ls404.html  50x.html  index.html  logs  nginx-logo.png  poweredby.png</div></pre></td></tr></table></figure>
-<p>进入自己创建的存放数据的文件夹logs，添加不同大小的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /usr/share/nginx/html/logs$ dd <span class="keyword">if</span>=/dev/zero of=1M bs=1M count=1</div></pre></td></tr></table></figure>
-<p>dd if=/dev/zero of=1M bs=1M count=1:bs=1M为创建文件大小；of=1M为创建文件的名称，可带上文件类型，如1M.txt。</p>
-<h3 id="1-5通过网页访问服务器"><a href="#1-5通过网页访问服务器" class="headerlink" title="1.5通过网页访问服务器"></a>1.5通过网页访问服务器</h3><p>访问网站：<a href="http://10.0.251.180/logs/，其中10.0.251.180为服务器IP。出现我们创建的文件，则nginx正在运行。" target="_blank" rel="external">http://10.0.251.180/logs/，其中10.0.251.180为服务器IP。出现我们创建的文件，则nginx正在运行。</a></p>
-<h2 id="2客户端配置文件"><a href="#2客户端配置文件" class="headerlink" title="2客户端配置文件"></a>2客户端配置文件</h2><h3 id="2-1修改配置文件"><a href="#2-1修改配置文件" class="headerlink" title="2.1修改配置文件"></a>2.1修改配置文件</h3><p>将httpdownload文件夹拷贝至root下面。<br>进入httpdownload文件夹，根据需求修改config.txt配置文件。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /root/httpdownload$ vi /root/httpdownload/config.txtIP:http://10.0.251.180/logs/filesize1:500Kcount1:1filesize2:1Mcount1:2</div></pre></td></tr></table></figure>
-<p>第一项是下载服务器文件IP；第二项是下载文件大小；第三项是同时下载该大小文件的数量；可配置同时并发下载不同大小和数量的文件。需要将“filesize”和“count”的序号依次递增。</p>
-<h3 id="2-2运行curls-sh"><a href="#2-2运行curls-sh" class="headerlink" title="2.2运行curls.sh"></a>2.2运行curls.sh</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ /root/httpdownload/curls.sh</div></pre></td></tr></table></figure>
-<p><a href="https://github.com/RanWX/netMonitor/tree/master/httpdownload" target="_blank" rel="external">相关代码下载</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;近期做网络测试，需要给网络加一定的压力，再测试此压力下的网络情况，提出的需求是：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;模拟http请求，能够返回不同的大小的页面&lt;/li&gt;
-&lt;li&gt;自由调节压力，不需要将带宽跑满&lt;/li&gt;
-&lt;li&gt;轻量级&lt;/li&gt;
-&lt;/ul&gt;
-    
-    </summary>
-    
-    
-      <category term="网络" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C/"/>
-    
-      <category term="http" scheme="http://yoursite.com/tags/http/"/>
-    
-      <category term="nginx" scheme="http://yoursite.com/tags/nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://yoursite.com/2017/01/11/hello-world/"/>
-    <id>http://yoursite.com/2017/01/11/hello-world/</id>
-    <published>2017-01-11T13:48:07.000Z</published>
-    <updated>2017-01-11T13:48:07.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-    
-    </summary>
-    
-    
-  </entry>
-  
-</feed>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/02/15/mtr丢包率分析/" class="next"><button class="ui button teal">NEXT</button></a></div><div class="copyright"><p>© 2016 - 2017 <a href="http://yoursite.com">Rosy</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and theme by <a href="https://github.com/littlewin-wang/hexo-theme-casual" target="_blank">casual</a></p></div></footer></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script><script src="/js/jquery.goup.min.js"></script><script src="/js/semantic.min.js"></script><script src="/js/casual.js"></script><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>$(document).ready(function(){$.goup({trigger:100,bottomOffset:100,locationOffset:5,title:'',titleAsText:true});});</script><script>(function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+_st('install','TvAnFS4AVxjiJUvrZJRB','2.0.0');</script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></div></body></html>
