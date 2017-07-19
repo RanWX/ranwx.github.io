@@ -8,7 +8,7 @@
 </blockquote>
 <p>在网上调研了一些工具，例如iperf之类的，都是测带宽用的，换言之都会将带宽跑满，于是便自己搭了个简易的服务器，在服务器上造出不同大小的文件，然后在客户端进行curl请求，以造成不同的压力。</p>
 <h2 id="1-服务器端"><a href="#1-服务器端" class="headerlink" title="1.服务器端"></a>1.服务器端</h2><h3 id="1-1系统环境"><a href="#1-1系统环境" class="headerlink" title="1.1系统环境"></a>1.1系统环境</h3><p>centos7</p>
-<h3 id="1-2安装nginx"><a href="#1-2安装nginx" class="headerlink" title="1.2安装nginx"></a>1.2安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[$ yum install nginx</div></pre></td></tr></table></figure>
+<h3 id="1-2安装nginx"><a href="#1-2安装nginx" class="headerlink" title="1.2安装nginx"></a>1.2安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install nginx</div></pre></td></tr></table></figure>
 <p>如果这一步找不到合适的源可以安装第三方软件库：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum -y install epel-release</div></pre></td></tr></table></figure>
 <p>卸载该软件库为：</p>

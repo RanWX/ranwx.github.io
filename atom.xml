@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-12T07:47:30.000Z</updated>
+  <updated>2017-07-19T03:48:21.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,165 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>swagger常用注解</title>
+    <link href="http://yoursite.com/2017/07/18/swagger%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3%E8%AE%B0%E5%BD%95/"/>
+    <id>http://yoursite.com/2017/07/18/swagger常用注解记录/</id>
+    <published>2017-07-18T05:35:10.000Z</published>
+    <updated>2017-07-19T03:48:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>翻译自<a href="https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X#apiimplicitparam-apiimplicitparams" target="_blank" rel="external">https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X#apiimplicitparam-apiimplicitparams</a>.<br>水平有限，不保证翻译准确，仅做自己学习记录之用。</p>
+<p>##Api资源声明</p>
+<p>###@Api</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@Path(&quot;/pet&quot;)</div><div class="line">@Api(value = &quot;pet&quot;, authorizations = &#123;</div><div class="line">      @Authorization(value=&quot;sampleoauth&quot;, scopes = &#123;&#125;)</div><div class="line">    &#125;)</div><div class="line">@Produces(&#123;&quot;application/json&quot;, &quot;application/xml&quot;&#125;)</div><div class="line">public class PetResource &#123;</div><div class="line"> ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在这个例子中我们可以看出，@Api标签下的所有操作都属于pet类（所有这些操作可以放在一起）。Swagger会选用@Produces标签下的值，但是你也可以根据需要进行覆盖。@Api也可以用于声明资源级别的权限。这些声明可以作用于其下的所有操作，但是这些操作也可以根据需要被重写。<br>除了用value()，也可以使用tags()来为操作设置多个tags，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@Api(tags = &#123;&quot;external_info&quot;,&quot;user_info&quot;&#125;)</div></pre></td></tr></table></figure>
+<p>此时，如果存在value()属性，将会被忽略。<br>布尔属性hidden可以用来完全隐藏一个@Api。当使用子资源删除不必要的工件这尤其有用。<br>更多请参见：<a href="http://docs.swagger.io/swagger-core/current/apidocs/index.html?io/swagger/annotations/Api.html" target="_blank" rel="external">javadocs</a>。</p>
+<p>##操作声明</p>
+<p>###@ApiOperation</p>
+<p>@ApiOperation用于声明单个操作。该操作应该是路径与HTTP方法的唯一结合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@GET</div><div class="line"> @Path(&quot;/findByStatus&quot;)</div><div class="line"> @ApiOperation(value = &quot;Finds Pets by status&quot;,</div><div class="line">    notes = &quot;Multiple status values can be provided with comma seperated strings&quot;,</div><div class="line">    response = Pet.class,</div><div class="line">    responseContainer = &quot;List&quot;)</div><div class="line"> public Response findPetsByStatus(...) &#123; ... &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><blockquote>
+<p>value属性是对这个API的简短描述，最后控制在120个字符以内。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>notes属于可以对操作进行详细说明。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>response是方法的返回类型，需要注意的是实际的方法声明返回的是一个通用的JAX-RS的类，而不是实际发送给用户的响应。如果返回的对象是实际的结果，它可以不用背声明直接被使用。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>responseContainer用于返回一个list。记住Java具有类型擦除功能，因此在返回结果中使用泛型可能导致结果不能被正确解析，所以response应该被直接使用。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>@Get和@Path标签分别用于操作HTTP方法和告诉我们方法的路径。</p>
+</blockquote>
+</li>
+</ul>
+<p>以上生成的API为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&quot;/pet/findByStatus&quot;: &#123;</div><div class="line">  &quot;get&quot;: &#123;</div><div class="line">    &quot;tags&quot;: [</div><div class="line">      &quot;pet&quot;</div><div class="line">    ],</div><div class="line">    &quot;summary&quot;: &quot;Finds Pets by status&quot;,</div><div class="line">    &quot;description&quot;: &quot;Multiple status values can be provided with comma seperated strings&quot;,</div><div class="line">    &quot;responses&quot;: &#123;</div><div class="line">      &quot;200&quot;: &#123;</div><div class="line">        &quot;description&quot;: &quot;successful operation&quot;,</div><div class="line">        &quot;schema&quot;: &#123;</div><div class="line">          &quot;type&quot;: &quot;array&quot;,</div><div class="line">          &quot;items&quot;: &#123;</div><div class="line">            &quot;$ref&quot;: &quot;#/definitions/Pet&quot;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      ...</div></pre></td></tr></table></figure>
+<p>更多请参见：<a href="http://docs.swagger.io/swagger-core/current/apidocs/index.html?io/swagger/annotations/Api.html" target="_blank" rel="external">javadocs</a>。</p>
+<p>###@ApiResponses, @ApiResponse</p>
+<p>众所周知可以使用HTTP状态码返回错误或成功信息。返回的类型已经在@ApiOperation定义了，其余的返回码可以在@ApiResponses, @ApiResponse标签中描述。</p>
+<p>@ApiResponse用于描述一个操作的可能返回结果。它不能直接被方法，类或者接口使用而需要作为一列值被@ApiResponses包含。<br>如果响应伴随了一个body，那这个body模型也可以被描述。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@ApiResponses(value = &#123; </div><div class="line">      @ApiResponse(code = 400, message = &quot;Invalid ID supplied&quot;, </div><div class="line">                   responseHeaders = @ResponseHeader(name = &quot;X-Rack-Cache&quot;, description = &quot;Explains whether or not a cache was used&quot;, response = Boolean.class)),</div><div class="line">      @ApiResponse(code = 404, message = &quot;Pet not found&quot;) &#125;)</div><div class="line">  public Response getPetById(...) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>###@Authorization, @AuthorizationScope</p>
+<p>这两个标签仅仅作为@Api和@ApiOperation的输入使用，不能直接用于资源和操作。一旦在API里声明和配置了授权模式，你可以将该标签用于需要的资源或某个操作上。具体使用如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@ApiOperation(value = &quot;Add a new pet to the store&quot;, </div><div class="line">    authorizations = &#123;</div><div class="line">      @Authorization(</div><div class="line">          value=&quot;petoauth&quot;, </div><div class="line">          scopes = &#123; @AuthorizationScope(scope = &quot;add:pet&quot;) &#125;</div><div class="line">          )</div><div class="line">    &#125;</div><div class="line">  )</div><div class="line">  public Response addPet(...) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>在上述例子中，我们声明addPet操作使用了授权模式，然后使用@AuthorizationScope对add:pet进行范围的调整。正如上面提到的，我们可以发现@AuthorizationScope被用作了@Authorization的一个输入，进一步可以作为@ApiOperation的输入。<br>以上生成的API为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&quot;security&quot;: [</div><div class="line">  &#123;</div><div class="line">    &quot;petoauth&quot;: [</div><div class="line">      &quot;add:pet&quot;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>##@ApiParam</p>
+<p>@ApiParam只能作为JAX-RS参数标签使用（@PathParam, @QueryParam, @HeaderParam, @FormParam, JAX-RS 2中 @BeanParam）。当swagger-core扫描这些标签时，@ApiParam可以被用于增加更多参数的细节或者改变从代码中读取的值。<br>Swagger采用注解的value()值作为参数名，并且会基于注解设置参数类型。<br>Swagger也会使用@DefaultValue的值作为默认值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> @Path(&quot;/&#123;username&#125;&quot;)</div><div class="line"> @ApiOperation(value = &quot;Updated user&quot;,</div><div class="line">    notes = &quot;This can only be done by the logged in user.&quot;)</div><div class="line">public Response updateUser(</div><div class="line">      @ApiParam(value = &quot;name that need to be updated&quot;, required = true) @PathParam(&quot;username&quot;) String username,</div><div class="line">      @ApiParam(value = &quot;Updated user object&quot;, required = true) User user) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>如上面的例子所示，我们有两个参数。第一个username是路径的一部分，另一个是User对象，上例中作为body。两个参数都将quired属性设置为了true。@PathParam，尽管是多余的，但是因为它是默认强制毕业有点，且不能被覆盖。<br>以上生成的API为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&quot;parameters&quot;: [</div><div class="line">  &#123;</div><div class="line">    &quot;name&quot;: &quot;username&quot;,</div><div class="line">    &quot;in&quot;: &quot;path&quot;,</div><div class="line">    &quot;description&quot;: &quot;name that need to be deleted&quot;,</div><div class="line">    &quot;required&quot;: true,</div><div class="line">    &quot;type&quot;: &quot;string&quot;</div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">    &quot;in&quot;: &quot;body&quot;,</div><div class="line">    &quot;name&quot;: &quot;body&quot;,</div><div class="line">    &quot;description&quot;: &quot;Updated user object&quot;,</div><div class="line">    &quot;required&quot;: true,</div><div class="line">    &quot;schema&quot;: &#123;</div><div class="line">      &quot;$ref&quot;: &quot;#/definitions/User&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>###@ApiImplicitParam, @ApiImplicitParams</p>
+<p>你可能希望手动对操作的参数进行描述，可能的理由有以下：</p>
+<ul>
+<li><blockquote>
+<p>使用了没有采用JAX-RS标签的Servlets。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>想隐藏一个参数，因为它已经被定义并且希望用完全不同的定义进行覆盖。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>描述一个被过滤器或者其他资源优先获取的JAX-RS的实现类。</p>
+</blockquote>
+</li>
+</ul>
+<p>@ApiImplicitParams可以有多个@ApiImplicitParams进行定义多个参数,注意这个注解@ApiImplicitParam必须被包含在注解@ApiImplicitParams之内。。</p>
+<p>当隐式定义多个参数时，name，dataType和paramType的定义是最重要的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@ApiImplicitParams(&#123;</div><div class="line">    @ApiImplicitParam(name = &quot;name&quot;, value = &quot;User&apos;s name&quot;, required = true, dataType = &quot;string&quot;, paramType = &quot;query&quot;),</div><div class="line">    @ApiImplicitParam(name = &quot;email&quot;, value = &quot;User&apos;s email&quot;, required = false, dataType = &quot;string&quot;, paramType = &quot;query&quot;),</div><div class="line">    @ApiImplicitParam(name = &quot;id&quot;, value = &quot;User ID&quot;, required = true, dataType = &quot;long&quot;, paramType = &quot;query&quot;)</div><div class="line">  &#125;)</div><div class="line"> public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>在上例中，我们可以看到一个servlet定义和几个参数，dataType既可以是一个原语（primitive）也可以是一个类名。paramType可以是Swagger支持的任意类型的参数。</p>
+<p>生成API为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">&quot;parameters&quot;: [</div><div class="line">  &#123;</div><div class="line">    &quot;name&quot;: &quot;name&quot;,</div><div class="line">    &quot;description&quot;: &quot;User&apos;s name&quot;,</div><div class="line">    &quot;required&quot;: true,</div><div class="line">    &quot;type&quot;: &quot;string&quot;,</div><div class="line">    &quot;in&quot;: &quot;query&quot;</div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">    &quot;name&quot;: &quot;email&quot;,</div><div class="line">    &quot;description&quot;: &quot;User&apos;s email&quot;,</div><div class="line">    &quot;required&quot;: false,</div><div class="line">    &quot;type&quot;: &quot;string&quot;,</div><div class="line">    &quot;in&quot;: &quot;query&quot;</div><div class="line">  &#125;,</div><div class="line">  &#123;</div><div class="line">    &quot;name&quot;: &quot;id&quot;,</div><div class="line">    &quot;description&quot;: &quot;User ID&quot;,</div><div class="line">    &quot;required&quot;: true,</div><div class="line">    &quot;type&quot;: &quot;integer&quot;,</div><div class="line">    &quot;format&quot;: &quot;int64&quot;,</div><div class="line">    &quot;in&quot;: &quot;query&quot;</div><div class="line">  &#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>ApiImplicitParam 与 ApiParam 的区别：</p>
+<ul>
+<li><blockquote>
+<p>对Servlets或者非 JAX-RS的环境，只能使用 ApiImplicitParam。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>在使用上，ApiImplicitParam比ApiParam具有更少的代码侵入性，只要写在方法上就可以了，但是需要提供具体的属性才能配合swagger ui解析使用。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>ApiParam只需要较少的属性，与swagger ui配合更好。</p>
+</blockquote>
+</li>
+</ul>
+<p>###@ResponseHeader</p>
+<p>如果你需要描述一个响应头（response header），你可以提供的响应头的名称、描述和类型，简单地将它添加到@ApiOperation或@ApiResponse中。<br>例如在一个给出的响应中是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@ApiResponses(value = &#123; </div><div class="line">    @ApiResponse(code = 400, message = &quot;Invalid ID supplied&quot;, </div><div class="line">                 responseHeaders = @ResponseHeader(name = &quot;X-Rack-Cache&quot;, description = &quot;Explains whether or not a cache was used&quot;, response = Boolean.class)),</div><div class="line">    @ApiResponse(code = 404, message = &quot;Pet not found&quot;) &#125;)</div><div class="line">public Response getPetById(...) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>##Model声明</p>
+<p>###@ApiModel</p>
+<p>Swagger-core基于引用API内省的方式构建模型定义。@ApiModel允许操作模型的元数据从一个简单的描述或名称变为一个多态的定义。<br>最基础的功能如下，使用@ApiModel改变一个模型的名称并为其添加描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@ApiModel(value=&quot;DifferentModel&quot;, description=&quot;Sample model for the documentation&quot;)</div><div class="line">class OriginalModel &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>上例我们改变模型的名称，输出结果为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&quot;DifferentModel&quot;: &#123;</div><div class="line">      &quot;description&quot;: &quot;Sample model for the documentation&quot;,</div><div class="line">      ...</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>还可以使用@ApiModel通过指定子类型实现模型组成:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@ApiModel(value = &quot;Pet&quot;, subTypes = &#123;Cat.class&#125;)</div><div class="line">public class Pet &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>###@ApiModelProperty</p>
+<p>尽管swagger-core会内省字段和setters/getters，它也可以读取和处理JAXB注释。@ApiModelProperty允许通过控制Swagger-specific定义被允许的值和增加的注解。它还提供了额外的过滤性能，以防你在某些情况下想隐藏属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@ApiModelProperty(value = &quot;pet status in the store&quot;, allowableValues = &quot;available,pending,sold&quot;)</div><div class="line">public String getStatus() &#123;</div><div class="line">  return status;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上例为一个模型熟悉添加了描述，此外我们可以发现，虽然status是一个String类型，但是我们证明了他只有三个可能值。API输出为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&quot;properties&quot;: &#123;</div><div class="line">        ...,</div><div class="line">        &quot;status&quot;: &#123;</div><div class="line">          &quot;type&quot;: &quot;string&quot;,</div><div class="line">          &quot;description&quot;: &quot;pet status in the store&quot;,</div><div class="line">          &quot;enum&quot;: [</div><div class="line">            &quot;available&quot;,</div><div class="line">            &quot;pending&quot;,</div><div class="line">            &quot;sold&quot;</div><div class="line">          ]</div><div class="line">        &#125;</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+<p>##Swagger Definition</p>
+<p>###@SwaggerDefinition</p>
+<p>SwaggerDefinition注解提供了许多与Swagger对象的顶级属性相关的属性，可以在自动生成的定义里设置这些属性。SwaggerDefinition注解可以加在任意类上，会在Swagger自动配置过程中国被扫描。此外，它可以用于标记/配置接口上，而不必须用于JAX-RS API类，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">@SwaggerDefinition(</div><div class="line">        info = @Info(</div><div class="line">                description = &quot;Gets the weather&quot;,</div><div class="line">                version = &quot;V12.0.12&quot;,</div><div class="line">                title = &quot;The Weather API&quot;,</div><div class="line">                termsOfService = &quot;http://theweatherapi.io/terms.html&quot;,</div><div class="line">                contact = @Contact(</div><div class="line">                   name = &quot;Rain Moore&quot;, </div><div class="line">                   email = &quot;rain.moore@theweatherapi.io&quot;, </div><div class="line">                   url = &quot;http://theweatherapi.io&quot;</div><div class="line">                ),</div><div class="line">                license = @License(</div><div class="line">                   name = &quot;Apache 2.0&quot;, </div><div class="line">                   url = &quot;http://www.apache.org/licenses/LICENSE-2.0&quot;</div><div class="line">                )</div><div class="line">        ),</div><div class="line">        consumes = &#123;&quot;application/json&quot;, &quot;application/xml&quot;&#125;,</div><div class="line">        produces = &#123;&quot;application/json&quot;, &quot;application/xml&quot;&#125;,</div><div class="line">        schemes = &#123;SwaggerDefinition.Scheme.HTTP, SwaggerDefinition.Scheme.HTTPS&#125;,</div><div class="line">        tags = &#123;</div><div class="line">                @Tag(name = &quot;Private&quot;, description = &quot;Tag used to denote operations as private&quot;)</div><div class="line">        &#125;, </div><div class="line">        externalDocs = @ExternalDocs(value = &quot;Meteorology&quot;, url = &quot;http://theweatherapi.io/meteorology.html&quot;)</div><div class="line">)</div><div class="line">public interface TheWeatherApiConfig &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上例所示的所有属性都会使相关元数据被添加到生成的swagger.json/swagger.yaml文件中。<br>如果添加了多个@SwaggerDefinition注解，他们会被按照顺序聚合——当出现重复的属性，将会出现覆盖。</p>
+<p>###@Info</p>
+<p>@Info注释添加通用的元数据属性定义——Info对象对应的规范。例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@SwaggerDefinition(</div><div class="line">        info = @Info(</div><div class="line">                description = &quot;Gets the weather&quot;,</div><div class="line">                version = &quot;V12.0.12&quot;,</div><div class="line">                title = &quot;The Weather API&quot;,</div><div class="line">                termsOfService = &quot;http://theweatherapi.io/terms.html&quot;,</div><div class="line">                ...</div><div class="line">        ),</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>###@Contact</p>
+<p>@Contact标签为@Info添加了contract属性——与Contract对象一样的规范。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@SwaggerDefinition(</div><div class="line">        info = @Info(</div><div class="line">                ...</div><div class="line">                contact = @Contact(</div><div class="line">                   name = &quot;Rain Moore&quot;, </div><div class="line">                   email = &quot;rain.moore@theweatherapi.io&quot;, </div><div class="line">                   url = &quot;http://theweatherapi.io&quot;</div><div class="line">                ),</div><div class="line">                ...</div><div class="line">        ),</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>###@License<br>@License标签为@Info添加了license属性——与license对象一样的规范。例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@SwaggerDefinition(</div><div class="line">        info = @Info(</div><div class="line">                ...</div><div class="line">                license = @License(</div><div class="line">                   name = &quot;Apache 2.0&quot;, </div><div class="line">                   url = &quot;http://www.apache.org/licenses/LICENSE-2.0&quot;</div><div class="line">                )</div><div class="line">        ),</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>###@Extension</p>
+<p>extension标签允许为Swagger定义添加扩展属性。目前支持在@ApiOperation @Info和@Tag注释。有两种方法可以使用它:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">   extensions = &#123;</div><div class="line">       @Extension(properties = &#123;</div><div class="line">           @ExtensionProperty(name = &quot;test1&quot;, value = &quot;value1&quot;),</div><div class="line">           @ExtensionProperty(name = &quot;test2&quot;, value = &quot;value2&quot;)</div><div class="line">       &#125;)</div><div class="line">    &#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>这种方法得到的是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">   &quot;x-test1&quot; : &quot;value1&quot;,</div><div class="line">   &quot;x-test2&quot; : &quot;value2&quot;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>如果注释中没有明确说明，属性名会自动加上前缀“x-”。<br>另外一种方法可以命名扩展属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">   extensions = &#123; </div><div class="line">       @Extension( name = &quot;my-extension&quot;, properties = &#123;</div><div class="line">           @ExtensionProperty(name = &quot;test1&quot;, value = &quot;value1&quot;),</div><div class="line">           @ExtensionProperty(name = &quot;test2&quot;, value = &quot;value2&quot;)</div><div class="line">       &#125;)</div><div class="line">    &#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>会得到将扩展属性包裹在json对象中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">   &quot;x-my-extension&quot; : &#123;</div><div class="line">      &quot;test1&quot; : &quot;value1&quot;,</div><div class="line">      &quot;test2&quot; : &quot;value2&quot;</div><div class="line">   &#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>###@ExtensionProperty</p>
+<p>这并不是一个独立的扩展属性，用法详见@Extension的例子。</p>
+<p>##定制Swagger定义</p>
+<p>如果现有的标签都不适用，你需要自定义标签，你可以使用Swagger引擎，ReaderListener提供了相关回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public interface ReaderListener &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * Called before the Swagger definition gets populated from scanned classes. Use this method to</div><div class="line">     * pre-process the Swagger definition before it gets populated.</div><div class="line">     *</div><div class="line">     * @param reader the reader used to read annotations and build the Swagger definition</div><div class="line">     * @param swagger the initial swagger definition</div><div class="line">     */</div><div class="line"></div><div class="line">    void beforeScan(Reader reader, Swagger swagger);</div><div class="line"></div><div class="line">    /**</div><div class="line">     * Called after a Swagger definition has been populated from scanned classes. Use this method to</div><div class="line">     * post-process Swagger definitions.</div><div class="line">     *</div><div class="line">     * @param reader the reader used to read annotations and build the Swagger definition</div><div class="line">     * @param swagger the configured Swagger definition</div><div class="line">     */</div><div class="line"></div><div class="line">    void afterScan(Reader reader, Swagger swagger);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当类在进行资源扫描中发现该注释，自定义的注释会被被实例化并进行相应的调用。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class BasePathModifier implements ReaderListener &#123;</div><div class="line">    void beforeScan(Reader reader, Swagger swagger)&#123;&#125;</div><div class="line"></div><div class="line">    void afterScan(Reader reader, Swagger swagger)&#123;</div><div class="line">        swagger.setBasePath( System.getProperty( &quot;swagger.basepath&quot;, swagger.getBasePath() ));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;翻译自&lt;a href=&quot;https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X#apiimplicitparam-apiimplicitparams&quot; target=&quot;_blank&quot; rel=&quot;e
+    
+    </summary>
+    
+    
+      <category term="swagger" scheme="http://yoursite.com/tags/swagger/"/>
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>devicemapper设置direct-lvm踩坑记</title>
-    <link href="http://yoursite.com/2017/04/11/devicemappe%E8%AE%BE%E7%BD%AEdirect-LVM%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
-    <id>http://yoursite.com/2017/04/11/devicemappe设置direct-LVM踩坑记/</id>
+    <link href="http://yoursite.com/2017/04/11/devicemapper%E8%AE%BE%E7%BD%AEdirect-LVM%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
+    <id>http://yoursite.com/2017/04/11/devicemapper设置direct-LVM踩坑记/</id>
     <published>2017-04-11T12:44:52.000Z</published>
-    <updated>2017-04-12T07:47:30.000Z</updated>
+    <updated>2017-04-12T07:49:32.000Z</updated>
     
     <content type="html"><![CDATA[<p>这是一篇碎碎念，想到哪儿就写到哪儿。。<br>官网上说：<em>Docker hosts running the devicemapper storage driver default to a configuration mode known as loop-lvm. This mode uses sparse files to build the thin pool used by image and container snapshots. The mode is designed to work out-of-the-box with no additional configuration. However, production deployments should not run under loop-lvm mode.</em><br>所有的资料都说生产环境中建议用direct-lvm进行存储。网上说优点是便于扩容，备份和数据的迁移，还有的说性能更好。<br>扩容，备份和数据易迁移是使用外挂硬盘的优点，并不能解释为什么devicemapper用direct-lvm存储模式被官方强烈推荐。甚至在第一次启动docker的时候如果devicemapper不是用direct-lvm还会被警告：<br><em>WARNING: Usage of loopback devices is strongly discouraged for production use. Either use <code>–storage-opt dm.thinpooldev</code> or use <code>–storage-opt dm.no_warn_on_loop_devices=true</code> to suppress this warning.</em><br>性能好这个优点有一定道理，网上有人对此做过性能的测试<a href="http://blog.csdn.net/gushenbusi/article/details/49494629" target="_blank" rel="external">http://blog.csdn.net/gushenbusi/article/details/49494629</a>，得出结论“direct-lvm直接使用dm-thin内核模块，直接使用raw分区，在高负载和高密度下具有性能优势。”可能我没有在高负载高密度下使用docker的需求，所以使用direct-lvm的性能优势对我作用也不大。<br>在实际使用过程中碰到的问题是：在centos7.1下使用docker1.8.1，devicemapper的loop-lvm模式。某天发现容器的空间被占满了，于是便将文件清掉。然后发现了奇怪的情况：删除容器内的文件，宿主机并不会释放空间，容器空间依然是被占满的。在对精简池（thin pool），宿主机磁盘，和容器限制大小进行了改变，并在docker1.8.2和docker1.12.6下分别进行实验，发现有以下情况：<br> 在centos7.1下，docker1.8.2和1.12.6容器内文件的变化对宿主机存储空间的影响基本一致：</p>
 <blockquote>
@@ -192,7 +346,7 @@
     <link href="http://yoursite.com/2017/02/15/mtr%E4%B8%A2%E5%8C%85%E7%8E%87%E5%88%86%E6%9E%90/"/>
     <id>http://yoursite.com/2017/02/15/mtr丢包率分析/</id>
     <published>2017-02-15T13:00:15.000Z</published>
-    <updated>2017-02-16T07:46:20.000Z</updated>
+    <updated>2017-05-04T01:04:53.000Z</updated>
     
     <content type="html"><![CDATA[<p>在Linux下，我们一般用ping来判断网络的丢包和延迟，用traceroute来跟踪路由路径。mtr将ping和traceroute结合起来，既能判断网络路由路径，又能得到丢包和延迟等信息。</p>
 <p>mtr的用法网上随便一搜就一大堆：<a href="https://www.mankier.com/8/mtr" target="_blank" rel="external">https://www.mankier.com/8/mtr</a></p>
@@ -225,7 +379,7 @@
 <p>由ping和mtr的抓包情况图可以看出：<br>mtr对目标地址发送一个icmp包，然后在一个节点返回一个icmp包；然后再对目标节点发送一个icmp包，再第二个节点返回一个icmp包；一直到最后一个节点返回icmp包，这样一次发包完成。参数 <em>-i</em> 便是控制这一过程时间的，默认是1秒钟。当节点比较多的时候，会出现发送了很多icmp包，之前所说的增加 <em>-i</em> 的参数值，能够降低这个发包频率，以达到避免被icmp限速的目的。如果其中某个节点返回的包丢掉了，则在该节点上产生了丢包率。<br>ping的icmp发包过程是本地发送给目标地址一个icmp包，然后目标地址返回一个icmp包。中通节点没有返回任何icmp包。如果目标地址返回的包丢失，则产生丢包率。</p>
 <p>由抓包可以看出，mtr的发包原理和traceroute类似，如下图：</p>
 <p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/mtr1.png" alt="mtr图"></p>
-<p>其中TTL(Time To Live)指定IP包被路由器丢弃之前允许通过的最大网段数量，当TTL减少为0时，路由器将会丢弃收到的TTL=0的icmp包并向icmp包的发送者发送 <em>ICMP time exceeded</em> 消息。假设本地mtr目标主机中途经过了3个节点，本地向目标主机发送一个icmp包，TTL=1，遇到第一个路由的时候，TTL变为0，向本地返回 <em>ICMP time exceeded in-transit</em> 消息；然后本地再向目标主机发送一个icmp包，TTL=2，再遇到第二个路由的时候TTL变为哦，返回 <em>ICMP time exceeded in-transit</em>；以此类推；当icmp包经过n跳到达最终的目标地址，则返回 <em>ICMP echo reply</em> 消息。如果某个阶段返回的icmp包丢失，则在此节点产生了丢包。</p>
+<p>其中TTL(Time To Live)指定IP包被路由器丢弃之前允许通过的最大网段数量，当TTL减少为0时，路由器将会丢弃收到的TTL=0的icmp包并向icmp包的发送者发送 <em>ICMP time exceeded</em> 消息。假设本地mtr目标主机中途经过了3个节点，本地向目标主机发送一个icmp包，TTL=1，遇到第一个路由的时候，TTL变为0，向本地返回 <em>ICMP time exceeded in-transit</em> 消息；然后本地再向目标主机发送一个icmp包，TTL=2，再遇到第二个路由的时候TTL变为0，返回 <em>ICMP time exceeded in-transit</em>；以此类推；当icmp包经过n跳到达最终的目标地址，则返回 <em>ICMP echo reply</em> 消息。如果某个阶段返回的icmp包丢失，则在此节点产生了丢包。</p>
 <p>按照这个原理，理论上当某个节点的ip地址产生较大丢包的时候，我们调整发包间隔，使发包速率不大于ping的发包速率，那么这个节点mtr得到的丢包率应该和直接ping这个节点得到的丢包率相等。然而事实上mtr的丢包率远大于ping这个节点的丢包率。问题出在ping和mtr返回的icmp包上。</p>
 <p>对于ping，本地给目标地址发送一个icmp包，如果目标主机收到了这个包，则返回一个类型为00的icmp (“ICMP echo reply”)。</p>
 <p>对于mtr，是hop by hop 的ping，在每个节点因为TTL=0而返回一个icmp包，此时返回的icmp包类型是110(“ICMP time exceeded”)，到最后一个节点返回一个跟ping类似的icmp包(“ICMP echo reply”)，如果某个路由的规则对类型为110的icmp进行了限制，则可能导致该节点产生丢包，而ping该节点返回的类型为00的icmp包则没有影响，因此ping不会产生丢包。或者某一个路由为了防止icmp包攻击，只开放了ping发出的字段的icmp包。如果某一个节点因为icmp限制而产生丢包，而下一节点不对110类型的icmp包做限制，所以下一节点不产生丢包。这就是网上所说的<strong>如果本节点丢包，接下来的节点没有丢包，则该节点可能是路由限速导致的丢包，和网络好坏没有关系</strong>。另外，除了对110包的限制，还有可能返回路径和发包路径不一致，即返回路过了别的节点，那个节点对icmp限制了，但是mtr不会打印出来。这就是网上建议的<strong>两个方向进行监控</strong>。当mtr发包到达最后一个节点（即目标主机），主机正常返回一个 <em>ICMP echo reply</em>，相当于一个正常的ping过程，因此<strong>最后一跳存在丢包率，可以看做整个链路的丢包率</strong>。</p>
@@ -254,7 +408,7 @@
     <link href="http://yoursite.com/2017/01/16/%E6%A8%A1%E6%8B%9FHTTP%E8%AF%B7%E6%B1%82%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%89%8B%E5%86%8C/"/>
     <id>http://yoursite.com/2017/01/16/模拟HTTP请求工具安装配置手册/</id>
     <published>2017-01-16T12:20:12.000Z</published>
-    <updated>2017-01-16T12:30:39.000Z</updated>
+    <updated>2017-05-04T01:05:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>近期做网络测试，需要给网络加一定的压力，再测试此压力下的网络情况，提出的需求是：</p>
 <blockquote>
@@ -266,7 +420,7 @@
 </blockquote>
 <p>在网上调研了一些工具，例如iperf之类的，都是测带宽用的，换言之都会将带宽跑满，于是便自己搭了个简易的服务器，在服务器上造出不同大小的文件，然后在客户端进行curl请求，以造成不同的压力。</p>
 <h2 id="1-服务器端"><a href="#1-服务器端" class="headerlink" title="1.服务器端"></a>1.服务器端</h2><h3 id="1-1系统环境"><a href="#1-1系统环境" class="headerlink" title="1.1系统环境"></a>1.1系统环境</h3><p>centos7</p>
-<h3 id="1-2安装nginx"><a href="#1-2安装nginx" class="headerlink" title="1.2安装nginx"></a>1.2安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[$ yum install nginx</div></pre></td></tr></table></figure>
+<h3 id="1-2安装nginx"><a href="#1-2安装nginx" class="headerlink" title="1.2安装nginx"></a>1.2安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install nginx</div></pre></td></tr></table></figure>
 <p>如果这一步找不到合适的源可以安装第三方软件库：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum -y install epel-release</div></pre></td></tr></table></figure>
 <p>卸载该软件库为：</p>
