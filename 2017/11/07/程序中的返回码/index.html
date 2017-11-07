@@ -1,0 +1,125 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 程序中的返回码 | Rosy's</title><meta name="description" content="程序中的返回码 - Rosy"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/casual.css"><link rel="stylesheet" href="/css/semantic.min.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Rosy's"></head><body><div class="sidebar"><div class="ui vertical inverted menu"><div class="h100"></div><h3 class="ui inverted aligned icon header"><div class="content"><a href="/" class="title-link">ROSY'S</a></div></h3><div class="h50"></div><div class="side-nav"><a href="/" target="_self" class="item">HOME<i class="icon home"></i></a><a href="/archives" target="_self" class="item">ARCHIVE<i class="icon archive"></i></a><a href="/tags" target="_self" class="item">TAGS<i class="icon tags"></i></a><a href="/about" target="_self" class="item">INFO<i class="icon info"></i></a><a href="/atom.xml" target="_self" class="item">RSS<i class="icon rss"></i></a></div><div class="item"><div class="ui inverted transparent icon input"><input type="text" placeholder="Search..." class="st-default-search-input"><i class="search icon"></i></div></div><div class="h50"></div></div><div class="h50 mq"><a class="ui teal big label"><i class="content icon"></i></a></div><div class="author-info"><a href="/" class="img-link"><img src="/me.jpeg" class="author-photo ui tiny circular image"></a><h4 class="ui aligned icon header"><div class="content">Rosy</div></h4><p class="author-desc">常常将自己分裂成三个人用于玩斗地主的双子女 | 热衷于烹饪 | 喜欢刘亦菲</p><div class="social-outer"><div class="social-inner"><a href="http://github.com/RanWX" target="_blank" class="social-link"><i class="icon github"></i></a><a href="http://weibo.com/u/2176147782?refer_flag=1005055010_&amp;is_all=1" target="_blank" class="social-link"><i class="icon weibo"></i></a></div></div></div></div><div class="main"><div class="wrap"><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">程序中的返回码</h1><div class="post-info"><div class="post-date"><h6 class="ui header"><i class="calendar icon"></i><div class="content">Nov 7, 2017</div></h6></div></div><div class="post-content"><p>HTTP状态码可以指明请求是否成功，还可以揭示请求失败的确切原因，是前后端进行“交流”的重要语言。在实际开发过程中，存在着对不同状态码应用场景不清楚，如何正确抛出合适的状态码的问题，使得前端开发人员不能很好的获取发起请求后后台的反应。本文旨在通过实际应用对现业务涉及的状态码进行探究记录，为以后开发中遇到类似问题作个参考。</p>
+<h2 id="1-查询一个资源"><a href="#1-查询一个资源" class="headerlink" title="1. 查询一个资源"></a>1. 查询一个资源</h2><p>例如：GET：/v1/characters/{id}</p>
+<h3 id="1-1-接口定义"><a href="#1-1-接口定义" class="headerlink" title="1.1 接口定义"></a>1.1 接口定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public interface CharacterService &#123;</div><div class="line">    @GET</div><div class="line">    @Path(&quot;&#123;id&#125;&quot;)</div><div class="line">    @ApiOperation(value = &quot;根据人物id查询人物详情&quot;, notes = &quot;根据人物id查询人物详情&quot;, response = CharacterDTO.class, tags = &#123;&quot;CharacterService&quot;,&#125;)</div><div class="line">    @ApiResponses(value = &#123;</div><div class="line">            @ApiResponse(code = 204, message = &quot;没有数据&quot;),</div><div class="line">            @ApiResponse(code = 404, message = &quot;@06404:请求参数错误&quot;),</div><div class="line">            @ApiResponse(code = 500, message = &quot;@06500:服务器异常&quot;)&#125;)</div><div class="line">    CharacterDTO getCharacterById(@ApiParam(value = &quot;人物ID&quot;, required = true) @NotNull(message = &quot;CharacterID must be not null&quot;) @PathParam(&quot;id&quot;) Long id);</div></pre></td></tr></table></figure>
+<h3 id="1-2-接口实现"><a href="#1-2-接口实现" class="headerlink" title="1.2 接口实现"></a>1.2 接口实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public CharacterDTO getCharacterById(Long characterId) &#123;</div><div class="line">        CharacterDTO characterDTO = null;</div><div class="line">        try&#123;</div><div class="line">            Character character = characterRepository.findByIdAndStatus(characterId, Status.VALID);</div><div class="line">            if (null == character)&#123;</div><div class="line">                return null;</div><div class="line">               //此处return null表示查询请求正确，但是没有资源，不抛异常，返回码204，表示没有数据。</div><div class="line">               //LOGGER.error(&quot;can not query character from db and character is: &quot; + characterId);</div><div class="line">               // throw new WebApplicationException(ScriptsTranslationReturnCode.NOT_FOUND_MODEL, &quot;can not find character&quot;);</div><div class="line">            &#125;</div><div class="line">            return beanMapper.map(character,CharacterDTO.class);</div><div class="line">        &#125; catch (WebApplicationException we)&#123;</div><div class="line">            LOGGER.error(we.getMessage(),we);</div><div class="line">            throw we;</div><div class="line">        &#125; catch (Exception e)&#123;</div><div class="line">            LOGGER.error(&quot;query character information by id error&quot;,e);</div><div class="line">            throw new WebApplicationException(ScriptsTranslationReturnCode.SERVICE_EXCEPTION, &quot;service exception&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>参数正确请求得到一个资源，返回200；</li>
+<li>参数正确资源不存在，返回204，或者404；</li>
+<li>参数类型错误（其他应该返回400），返回404，路径斜杠后的参数错误不会返回400.<h2 id="2-查询一个资源，该资源可能关联其他子资源。"><a href="#2-查询一个资源，该资源可能关联其他子资源。" class="headerlink" title="2. 查询一个资源，该资源可能关联其他子资源。"></a>2. 查询一个资源，该资源可能关联其他子资源。</h2>例如：GET: {id}/lines-info</li>
+</ul>
+<h3 id="2-1-接口定义"><a href="#2-1-接口定义" class="headerlink" title="2.1 接口定义"></a>2.1 接口定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@GET</div><div class="line">    @Path(&quot;&#123;id : \\d+&#125;/device-models&quot;)</div><div class="line">    @ApiOperation(value = &quot;根据镜像id得到终端型号列表&quot;, notes = &quot;根据镜像id得到终端型号列表&quot;, response = SimpleImageContentDTO.class, responseContainer = &quot;List&quot;, tags=&#123; &quot;image content&quot;&#125;)</div><div class="line">    @ApiResponses(value = &#123;</div><div class="line">            @ApiResponse(code = 200, message = &quot;OK&quot;, response = DeviceModelDTO.class, responseContainer = &quot;List&quot;),</div><div class="line">            @ApiResponse(code = 204, message = &quot;没有数据&quot;),</div><div class="line">            @ApiResponse(code = 422, message = &quot;06450：无法处理的镜像资源&quot;, responseContainer = &quot;Object&quot;),</div><div class="line">            @ApiResponse(code = 500, message = &quot;06500：服务异常&quot;, responseContainer = &quot;Object&quot;) &#125;)</div><div class="line">    List&lt;DeviceModelDTO&gt; queryDeviceModelsById(@ApiParam(value = &quot;镜像id&quot;,required = true) @NotNull(message = &quot;The image content id must not be null&quot;) @PathParam(&quot;id&quot;) Long id);</div></pre></td></tr></table></figure>
+<h3 id="2-2-接口实现"><a href="#2-2-接口实现" class="headerlink" title="2.2 接口实现"></a>2.2 接口实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">    public List&lt;DeviceModelDTO&gt; queryDeviceModelsById(Long id) &#123;</div><div class="line">        try&#123;</div><div class="line">            ImageContent imageContent = imageContentRepository.findByIdAndStatus(id, Status.VALID);</div><div class="line">            if (imageContent==null)&#123;</div><div class="line">                throw new UnprocessableEntityException(TerminalDeviceReturnCode.UNPROCESSABLE_IMAGE_CONTENT,&quot;image content not found&quot;);</div><div class="line">            &#125;</div><div class="line">            List&lt;DeviceModel&gt; deviceModelList = deviceModelRepository.queryDeviceModelsByImageContentId(id);</div><div class="line">            if (CollectionUtils.isEmpty(deviceModelList))&#123;</div><div class="line">                return null;</div><div class="line">            &#125;</div><div class="line">            return beanMapper.mapAsList(deviceModelList,DeviceModelDTO.class);</div><div class="line">        &#125; catch (WebApplicationException we) &#123;</div><div class="line">            LOGGER.error(&quot;query device models by Id error!&quot; ,we);</div><div class="line">            throw we;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            LOGGER.error(&quot;query device models by Id error!&quot; ,e);</div><div class="line">            throw new WebApplicationException(TerminalDeviceReturnCode.SERVICE_EXCEPTION, &quot;service exception!&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>根据A资源查询B资源</p>
+<ul>
+<li>正确查询，返回200；</li>
+<li>根据查不到A资源信息，返回422，抛异常UnprocessableException。</li>
+<li>可以查到A资源，但是根据A资源查不到B资源，返回204或者404；</li>
+</ul>
+<h2 id="3-修改一个资源"><a href="#3-修改一个资源" class="headerlink" title="3. 修改一个资源"></a>3. 修改一个资源</h2><p>例如：PUT:/translation-lines-info/{id}</p>
+<h3 id="3-1接口定义"><a href="#3-1接口定义" class="headerlink" title="3.1接口定义"></a>3.1接口定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@PUT</div><div class="line">    @Path(&quot;&#123;id&#125;&quot;)</div><div class="line">    @ApiOperation(value = &quot;修改人物信息&quot;, notes = &quot;修改人物信息&quot;, response = CharacterDTO.class, tags = &#123;&quot;CharacterService&quot;,&#125;)</div><div class="line">    @ApiResponses(value = &#123;</div><div class="line">            @ApiResponse(code = 201, message = &quot;修改成功&quot;),</div><div class="line">            @ApiResponse(code = 404, message = &quot;@06404：人物信息不存在&quot;),</div><div class="line">            @ApiResponse(code = 400, message = &quot;@06400: 请求参数错误&quot;),</div><div class="line">            @ApiResponse(code = 409, message = &quot;@06411:人物名称冲突&quot;),</div><div class="line">            @ApiResponse(code = 500, message = &quot;@06500：服务异常&quot;)&#125;)</div><div class="line">    CharacterDTO modifyCharacter(@ApiParam(value = &quot;人物id&quot;, required = true) @NotNull(message = &quot;parameter must not be null&quot;) @PathParam(&quot;id&quot;) Long id, @NotNull(message = &quot;parameter must be not null&quot;) @ApiParam(value = &quot;人物信息&quot;, required = true) CharacterDTO characterDTO);</div></pre></td></tr></table></figure>
+<h3 id="3-2-接口实现"><a href="#3-2-接口实现" class="headerlink" title="3.2 接口实现"></a>3.2 接口实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">public CharacterDTO modifyCharacter(Long id, CharacterDTO characterDTO) &#123;</div><div class="line">        try &#123;</div><div class="line">            Character character = characterRepository.findByIdAndStatus(id,Status.VALID);</div><div class="line">            if(character == null)&#123;</div><div class="line">                throw new WebApplicationException(ScriptsTranslationReturnCode.NOT_FOUND_MODEL, &quot;modify character error! can not found character info exception!&quot;);</div><div class="line">            &#125;</div><div class="line">            String chName = characterDTO.getName();</div><div class="line">            String enName = characterDTO.getEnglishName();</div><div class="line">            Long dramaId = characterDTO.getDramaId();</div><div class="line">            if(org.springframework.util.StringUtils.isEmpty(chName) || org.springframework.util.StringUtils.isEmpty(enName) || dramaId == null)&#123;</div><div class="line">                throw new ClientErrorException(HttpStatus.BAD_REQUEST, ScriptsTranslationReturnCode.PARAM_ERROR, &quot; chname or enname or dramaid is empty!&quot;);</div><div class="line">            &#125;</div><div class="line">            List&lt;Character&gt; chNamesOrEnNames = characterRepository.findOtherIdExistNames(chName,enName,id,dramaId);</div><div class="line">            if(chNamesOrEnNames.size() &gt; 0)&#123;</div><div class="line">                throw new ClientErrorException(HttpStatus.CONFLICT, ScriptsTranslationReturnCode.DRAMA_ADD_OR_UPDATE_CHARACTER_NAME_CONFICT, &quot; chname or enname conflict&quot;);</div><div class="line">            &#125;</div><div class="line">            Character modifyCharacher = fillingModifyParams(characterDTO, character);</div><div class="line">            Character modifyResult = characterRepository.saveAndFlush(modifyCharacher);</div><div class="line">            return beanMapper.map(modifyResult, CharacterDTO.class);</div><div class="line">        &#125;catch (ClientErrorException we)&#123;</div><div class="line">            LOGGER.error(we.getMessage(),we);</div><div class="line">            throw we;</div><div class="line">        &#125; catch (Exception e)&#123;</div><div class="line">            LOGGER.error(&quot;modify character error&quot;,e);</div><div class="line">            throw new WebApplicationException(ScriptsTranslationReturnCode.SERVICE_EXCEPTION, &quot;service exception&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>修改成功返回201；</li>
+<li>根据路径上的id查询人物信息没查到，返回404；</li>
+<li>如果路径上的id为非数字类型，返回404；</li>
+<li>如果dto里的类型错误，返回400（body和？后的参数类型错误，返回400），抛出BadRequestException；</li>
+<li>修改的数据与原数据产生了冲突（根据业务定义），返回409，抛出ClienErrorException。</li>
+</ul>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>现在涉及到的状态码有以下几个：</p>
+<ul>
+<li>200：用于成功查询到信息。</li>
+<li>201：用于修改或添加成功。</li>
+<li>204：用于删除成功，也可用于找不到资源。</li>
+<li>400：body和“？”后的参数类型错误，抛出BadRequestException。</li>
+<li>404：“/”后的参数错误，或者找不到资源。</li>
+<li>409：修改的数据与原数据产生了冲突（根据业务定义），返回409，抛出ClienErrorException。</li>
+<li>422：当用户针对不存在的资源进行操作时，则返回404，当用户传入无效字段，则返回422，抛出异常UnprocessableException。<br>例如：<br>修改A资源，但A资源不存在，则返回404；<br>根据A资源，添加A与B资源的关系，此时操作主体是A与B资源的关系表，当A和B都不存在时，则是属于创建某个资源，发生了一个验证错误，此时应该返回422。</li>
+</ul>
+<hr>
+<h2 id="附1-常用http状态码"><a href="#附1-常用http状态码" class="headerlink" title="附1. 常用http状态码"></a>附1. 常用http状态码</h2><p>服务器向用户返回的状态码和提示信息，常见的有以下一些（方括号中是该状态码对应的HTTP动词）。</p>
+<ul>
+<li><blockquote>
+<p>200 OK - [<strong>GET</strong>]：服务器成功返回用户请求的数据，该操作是幂等的（Idempotent）（在编程中，一个幂等操作的特点是其任意多次执行所产生的影响均与一次执行的影响相同。）</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>201 CREATED - [<strong>POST/PUT/PATCH</strong>]：用户新建或修改数据成功。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>202 Accepted - [*]：表示一个请求已经进入后台排队（异步任务）</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>204 NO CONTENT - [DELETE]：用户删除数据成功。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>400 INVALID REQUEST - [<strong>POST/PUT/PATCH</strong>]：用户请求错误，参数格式不符合调用API规定、资源不存在、语义参数服务端无法处理等</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>401 Unauthorized - [*] ：表示用户<strong>没有权限</strong>（令牌、用户名、密码错误）。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>403 Forbidden - [*]：表示用户<strong>得到授权</strong>（与401错误相对），但是<strong>访问是被禁止</strong>的。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>404 NOT FOUND - [*]：用户发出的请求针对的是不存在的记录，<strong>服务器没有进行操作</strong>，该操作是幂等的。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>406 Not Acceptable - [<strong>GET</strong>]：用户请求的格式不可得（比如用户请求JSON格式，但是只有XML格式）。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>410 Gone -[<strong>GET</strong>]：用户请求的资源被永久删除，且不会再得到的。</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>422 Unprocesable entity - [<strong>POST/PUT/PATCH</strong>]：<strong>当创建一个对象时，发生一个验证错误。</strong></p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>500 INTERNAL SERVER ERROR - [*]：服务器发生错误，用户将无法判断发出的请求是否成功。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="附2-服务接口方法名规"><a href="#附2-服务接口方法名规" class="headerlink" title="附2. 服务接口方法名规"></a>附2. 服务接口方法名规</h2><ul>
+<li><blockquote>
+<p>add开头方法代表添加数据：add</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>modify开头方法代表修改业务数据：modify</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>query开头方法代表查询多条数据：queryByCondition，queryByIDs</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>get开头方法代表返回一条数据：getByID</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>delete开头方法代表删除数据：deleteByID</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>提供服务的方法不要有重载</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>方法参数不要超过5个，多于5个请使用包装类（DTO）</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>方法参数类型不能使用int/char/double/long/boolean/short/float，必须换成对应Integer/Character/Double/Long/Boolean/Short/Float类型</p>
+</blockquote>
+</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/11/07/JAVA写入word文档（用POI包）/" class="prev"><button class="ui button teal">PREV</button></a><a href="/2017/07/18/swagger常用注解记录/" class="next"><button class="ui button teal">NEXT</button></a></div><div class="copyright"><p>© 2016 - 2017 <a href="http://yoursite.com">Rosy</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and theme by <a href="https://github.com/littlewin-wang/hexo-theme-casual" target="_blank">casual</a></p></div></footer></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script><script src="/js/jquery.goup.min.js"></script><script src="/js/semantic.min.js"></script><script src="/js/casual.js"></script><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>$(document).ready(function(){$.goup({trigger:100,bottomOffset:100,locationOffset:5,title:'',titleAsText:true});});</script><script>(function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+_st('install','TvAnFS4AVxjiJUvrZJRB','2.0.0');</script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></div></body></html>
