@@ -1,0 +1,91 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> java基本数据类型及其封装类 | Rosy's</title><meta name="description" content="java基本数据类型及其封装类 - Rosy"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/casual.css"><link rel="stylesheet" href="/css/semantic.min.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Rosy's"></head><body><div class="sidebar"><div class="ui vertical inverted menu"><div class="h100"></div><h3 class="ui inverted aligned icon header"><div class="content"><a href="/" class="title-link">ROSY'S</a></div></h3><div class="h50"></div><div class="side-nav"><a href="/" target="_self" class="item">HOME<i class="icon home"></i></a><a href="/archives" target="_self" class="item">ARCHIVE<i class="icon archive"></i></a><a href="/tags" target="_self" class="item">TAGS<i class="icon tags"></i></a><a href="/about" target="_self" class="item">INFO<i class="icon info"></i></a><a href="/atom.xml" target="_self" class="item">RSS<i class="icon rss"></i></a></div><div class="item"><div class="ui inverted transparent icon input"><input type="text" placeholder="Search..." class="st-default-search-input"><i class="search icon"></i></div></div><div class="h50"></div></div><div class="h50 mq"><a class="ui teal big label"><i class="content icon"></i></a></div><div class="author-info"><a href="/" class="img-link"><img src="/me.jpeg" class="author-photo ui tiny circular image"></a><h4 class="ui aligned icon header"><div class="content">Rosy</div></h4><p class="author-desc">常常将自己分裂成三个人用于玩斗地主的双子女 | 热衷于烹饪 | 喜欢刘亦菲</p><div class="social-outer"><div class="social-inner"><a href="http://github.com/RanWX" target="_blank" class="social-link"><i class="icon github"></i></a><a href="http://weibo.com/u/2176147782?refer_flag=1005055010_&amp;is_all=1" target="_blank" class="social-link"><i class="icon weibo"></i></a></div></div></div></div><div class="main"><div class="wrap"><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">java基本数据类型及其封装类</h1><div class="post-info"><div class="post-date"><h6 class="ui header"><i class="calendar icon"></i><div class="content">Nov 30, 2017</div></h6></div></div><div class="post-content"><p>之前刚从python写java，碰到过两个String比较大小，习惯性用了“==”，发现不管我的String赋什么样的值，最后都是false。后来网上搜了一下，发现是封装类的原因。</p>
+<h2 id="1-相关说明"><a href="#1-相关说明" class="headerlink" title="1.相关说明"></a>1.相关说明</h2><p>说到封装类，不得不提到栈内存和堆内存。<br>堆内存在Java运行时被使用来为对象和JRE类分配内存。不论什么时候我们创建了对象，它将一直会在堆内存上创建。垃圾回收运行在堆内存上来释放没有任何引用的对象所占的内存，任何在堆上被创建的对象都有一个全局的访问，并且可以在应用的任何位置被引用。</p>
+<p>Java的栈内存被用来线程的执行，他们包含生命周期很短的具体值的方法和在堆中使用这个方法对象的引用。栈内存是LIFO（后进先出）序列。当方法被调用的时候，堆内存中一个新的块被创建，保存了本地原始值和在方法中对其他对象的引用。这个方法结束之后，这个块对其他方法就变成可用的了。和堆内存比，栈内存要小的多，因为明确使用了内存分配规则（LIFO），和堆内存相比栈内存非常快。</p>
+<h2 id="2-封装类型和基本类型比较"><a href="#2-封装类型和基本类型比较" class="headerlink" title="2. 封装类型和基本类型比较"></a>2. 封装类型和基本类型比较</h2><h3 id="2-1-封装类型和基本类型说明"><a href="#2-1-封装类型和基本类型说明" class="headerlink" title="2.1 封装类型和基本类型说明"></a>2.1 封装类型和基本类型说明</h3><p>Java的基本数据类型：int，double，float，long，byte，char，boolean。<br>对应的封装类：Integer，Double，Float，Long，Byte，Char，Boolean。<br>封装类型和基本类型的内存模型本质上是不一样的。基本数据类型直接存储在内存中的内存栈上的，数据本身的值就是存储在栈空间里面，不存在“引用”的概念。封装类型是按照Java里面存储对象的内存模型来进行数据存储的，使用Java内存堆和内存栈来进行这种类型的数据存储，对象本身的值存储在内存堆上，栈内存只包含原始值变量和堆中对象变量的引用。封装类型和基本类型有不同的默认值：封装类型默认值为null，基本类型的默认值于本身的类型有关。基本数据类型本身就是一个值。</p>
+<h3 id="2-2基本数据类型及其封装类的转换"><a href="#2-2基本数据类型及其封装类的转换" class="headerlink" title="2.2基本数据类型及其封装类的转换"></a>2.2基本数据类型及其封装类的转换</h3><p>定义基本数据类型转封装类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">intnum=3;</div><div class="line">Integerinteger=newInteger(num);</div></pre></td></tr></table></figure>
+<p>在添加了自动装拆箱的功能之后:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Integer integer=3;</div></pre></td></tr></table></figure>
+<p>封装类转基本数据类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">integer integer=newInteger(3);</div><div class="line">int num=integer.intValue();</div></pre></td></tr></table></figure>
+<p>当然，也可以直接int num=integer，这里的自动拆箱，其实也是调用了封装类的intValue()方法来实现的。<br>将String类型字符串与基本数据类型进行转换。<br>字符串转基本数据类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String ageString=&quot;23&quot;;</div><div class="line">int age=Integer.parseInt(ageString);</div></pre></td></tr></table></figure>
+<p>基本数据类型转字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">String age=23+&quot;&quot;;</div><div class="line">或者Stringage = String.valueOf(23);</div></pre></td></tr></table></figure>
+<p>封装类转字符串,直接调用封装类对象的toString()方法即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Integer age = 23;</div><div class="line">String ageString=age.toString();</div></pre></td></tr></table></figure>
+<h3 id="2-3-封装类型和基本类型数值直接的比较方法（equal和-）"><a href="#2-3-封装类型和基本类型数值直接的比较方法（equal和-）" class="headerlink" title="2.3 封装类型和基本类型数值直接的比较方法（equal和==）"></a>2.3 封装类型和基本类型数值直接的比较方法（equal和==）</h3><p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">int n=3;</div><div class="line">int m=3;</div></pre></td></tr></table></figure>
+<p>变量n和变量m都是直接存储的“3”这个数值，所以用==比较的时候结果是true。<br>而对于非基本数据类型的变量，是引用类型的变量，引用类型的变量存储的并不是“值”本身，而是于其关联的对象在内存中的地址。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">String str1;</div></pre></td></tr></table></figure>
+<p>这句话声明了一个引用类型的变量，此时它并没有和任何对象关联。<br>而通过newString（”hello”）来产生一个对象（也称作为类String的一个实例），并将这个对象和str1、str2进行绑定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">str1=newString(&quot;hello&quot;);（或者：String str1=&quot;hello&quot;;）</div><div class="line">str2=newString(&quot;hello&quot;);（或者：String str2=&quot;hello&quot;;）</div></pre></td></tr></table></figure>
+<p>那么str1指向了一个对象，此时变量str1中存储的是它指向的对象在内存中的存储地址，并不是“值”本身，也就是说并不是直接存储的字符串”hello”。这里面的引用和C/C++中的指针很类似。<br>因此在用==对str1和str2进行第一次比较时，得到的结果是false。因此它们分别指向的是不同的对象，也就是说它们实际存储的内存地址不同。<br>而在第二次比较时，都让str1和str2指向了str指向的对象，那么得到的结果毫无疑问是true。<br>equals方法是基类Object中的方法，因此对于所有的继承于Object的类都会有该方法。<br>在Object类中，equals方法是用来比较两个对象的引用是否相等，即是否指向同一个对象。String类对equals方法进行了重写，用来比较指向的字符串对象所存储的字符串是否相等。</p>
+<p>对于封装过之后，每个类型都有对应的缓存：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>缓存情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Byte</td>
+<td>全部缓存</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>全部缓存</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td>-128~127缓存</td>
+</tr>
+<tr>
+<td>Character</td>
+<td>&lt;=127缓存</td>
+</tr>
+<tr>
+<td>Short</td>
+<td>-128~127缓存</td>
+</tr>
+<tr>
+<td>Long</td>
+<td>-128~127缓存</td>
+</tr>
+<tr>
+<td>Float</td>
+<td>没有缓存</td>
+</tr>
+<tr>
+<td>Double</td>
+<td>没有缓存</td>
+</tr>
+</tbody>
+</table>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Integer i1=127;// java在编译的时候，被翻译成-&gt;Integer i1=Integer.valueOf(127);</div><div class="line">Integer i2=127;</div><div class="line">System.out.println(i1==i2);// true</div><div class="line">Integer _i1=128;</div><div class="line">Integer _i2=128;</div><div class="line">System.out.println(_i1==_i2);//false</div></pre></td></tr></table></figure>
+<p>对于-128到127之间的数，会进行缓存，Integer i1=127时，会将127进行缓存，下次再写Integer i2=127时，就会直接从缓存中取，就不会new了。所以i1 == i2 是true；而_i1 == _i2是false。</p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><h3 id="3-1基本类型："><a href="#3-1基本类型：" class="headerlink" title="3.1基本类型："></a>3.1基本类型：</h3><p>优点：</p>
+<ul>
+<li>用于计算效率高</li>
+<li>不会由于常量池引起比较大小错误</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>当数据库中查询出结果之后封装结果集时如果返回的值时null时，如果直接赋值给这个基本类型的字段时，会在运行时报出异常，不能将null赋给一个基本类型，而用Integer就不存在这样都的情况</li>
+<li>当用spring的表单对象时如果页面传来的值是只有字段没有值是如果表单对象中有基本类型的值时会抛出异常。需要设置在数据库中为该字段设置默认值，但是这经常会被忽略。</li>
+</ul>
+<h3 id="3-2封装类型"><a href="#3-2封装类型" class="headerlink" title="3.2封装类型"></a>3.2封装类型</h3><p>优点：</p>
+<ul>
+<li>可以存放null，从数据库中查出值时可能会有null</li>
+<li>表示一个值（不用于计算，只用于保存值时和int类型一样）;</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>不能用于两个Integer对象双等判断两个对象的值相等，会出现错误的。</li>
+</ul>
+<p>java中Integer，String判断相等与integer的比较大小不适合频繁的用于计算，要用双等判断两个对象的值是否相等时，要调用intValue方法<br>综上所述，在建立实体类时，用封装类型比较好；如果需要频发的计算，则用基本类型效率更高。</p>
+</div></article></div></section><footer><div class="paginator"><a href="/2017/11/30/docker里用tomcat8下载文件/" class="prev"><button class="ui button teal">PREV</button></a><a href="/2017/11/07/JAVA写入word文档（用POI包）/" class="next"><button class="ui button teal">NEXT</button></a></div><div class="copyright"><p>© 2016 - 2017 <a href="http://yoursite.com">Rosy</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and theme by <a href="https://github.com/littlewin-wang/hexo-theme-casual" target="_blank">casual</a></p></div></footer></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script><script src="/js/jquery.goup.min.js"></script><script src="/js/semantic.min.js"></script><script src="/js/casual.js"></script><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>$(document).ready(function(){$.goup({trigger:100,bottomOffset:100,locationOffset:5,title:'',titleAsText:true});});</script><script>(function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+_st('install','TvAnFS4AVxjiJUvrZJRB','2.0.0');</script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></div></body></html>
