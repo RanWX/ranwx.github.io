@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2018/03/13/java-BigDecimal%E6%AF%94%E8%BE%83%E5%A4%A7%E5%B0%8FcompareTo%E5%92%8Cequals/</loc>
+    
+    <lastmod>2018-03-13T11:44:20.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2018/03/13/jpa%E8%81%94%E8%A1%A8%E6%9F%A5%E8%AF%A2%E5%AF%B9%E5%AD%90%E8%A1%A8%E8%BF%9B%E8%A1%8Ccrud%E6%93%8D%E4%BD%9C/</loc>
+    
+    <lastmod>2018-03-13T11:43:36.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/11/30/java%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%85%B6%E5%B0%81%E8%A3%85%E7%B1%BB/</loc>
     
     <lastmod>2017-11-30T12:33:55.000Z</lastmod>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-11-30T12:31:49.000Z</updated>
+  <updated>2018-03-13T11:44:20.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,84 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>java BigDecimal比较大小compareTo和equals</title>
+    <link href="http://yoursite.com/2018/03/13/java-BigDecimal%E6%AF%94%E8%BE%83%E5%A4%A7%E5%B0%8FcompareTo%E5%92%8Cequals/"/>
+    <id>http://yoursite.com/2018/03/13/java-BigDecimal比较大小compareTo和equals/</id>
+    <published>2018-03-13T11:41:57.000Z</published>
+    <updated>2018-03-13T11:44:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Java在java.math包中提供的API类BigDecimal，用来对超过16位有效位的数进行精确的运算，常用BigDecimal来存金额。在对金额进行校验的时候发生异常，后来发现是比较大小的方法equals导致的。</p>
+<p>BigDecimal的equals方法源码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public boolean equals(Object x) &#123;</div><div class="line">    if (!(x instanceof BigDecimal))</div><div class="line">        return false;</div><div class="line">    BigDecimal xDec = (BigDecimal) x;</div><div class="line">    if (x == this)</div><div class="line">        return true;</div><div class="line">    if (scale != xDec.scale)</div><div class="line">        return false;</div><div class="line">    long s = this.intCompact;</div><div class="line">    long xs = xDec.intCompact;</div><div class="line">    if (s != INFLATED) &#123;</div><div class="line">        if (xs == INFLATED)</div><div class="line">            xs = compactValFor(xDec.intVal);</div><div class="line">        return xs == s;</div><div class="line">    &#125; else if (xs != INFLATED)</div><div class="line">        return xs == compactValFor(this.intVal);</div><div class="line">    return this.inflated().equals(xDec.inflated());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>equals方法不仅比较了两个数的大小，还比较了精度是否相等，当出现5和5.0这种，就会被认为是不相等的。</p>
+<p>compareTo的源码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public int compareTo(BigDecimal val) &#123;</div><div class="line">    // Quick path for equal scale and non-inflated case.</div><div class="line">    if (scale == val.scale) &#123;</div><div class="line">        long xs = intCompact;</div><div class="line">        long ys = val.intCompact;</div><div class="line">        if (xs != INFLATED &amp;&amp; ys != INFLATED)</div><div class="line">            return xs != ys ? ((xs &gt; ys) ? 1 : -1) : 0;</div><div class="line">    &#125;</div><div class="line">    int xsign = this.signum();</div><div class="line">    int ysign = val.signum();</div><div class="line">    if (xsign != ysign)</div><div class="line">        return (xsign &gt; ysign) ? 1 : -1;</div><div class="line">    if (xsign == 0)</div><div class="line">        return 0;</div><div class="line">    int cmp = compareMagnitude(val);</div><div class="line">    return (xsign &gt; 0) ? cmp : -cmp;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>compareTo方法只比较了两个数的大小，没有比较精度是否相等，当出现5和5.0这种，就会被认为是相等的。</p>
+<p>BigDecimal常用方法：</p>
+<ol>
+<li>add(BigDecimal)：BigDecimal对象中的值相加，然后返回这个对象。</li>
+<li>subtract(BigDecimal)：BigDecimal对象中的值相减，然后返回这个对象。</li>
+<li>multiply(BigDecimal)：BigDecimal对象中的值相乘，然后返回这个对象。</li>
+<li>divide(BigDecimal)：BigDecimal对象中的值相除，然后返回这个对象。</li>
+<li>toString()：将BigDecimal对象的数值转换成字符串。</li>
+<li>doubleValue()：将BigDecimal对象中的值以双精度数返回。</li>
+<li>floatValue()：将BigDecimal对象中的值以单精度数返回。</li>
+<li>longValue()：将BigDecimal对象中的值以长整数返回。</li>
+<li>intValue()：将BigDecimal对象中的值以整数返回。</li>
+</ol>
+<p>相关文章：<a href="http://blog.csdn.net/lisongjia123/article/details/51232657" target="_blank" rel="external">http://blog.csdn.net/lisongjia123/article/details/51232657</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Java在java.math包中提供的API类BigDecimal，用来对超过16位有效位的数进行精确的运算，常用BigDecimal来存金额。在对金额进行校验的时候发生异常，后来发现是比较大小的方法equals导致的。&lt;/p&gt;
+&lt;p&gt;BigDecimal的equals方法
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+      <category term="BigDecimal" scheme="http://yoursite.com/tags/BigDecimal/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>jpa联表查询对子表进行crud操作</title>
+    <link href="http://yoursite.com/2018/03/13/jpa%E8%81%94%E8%A1%A8%E6%9F%A5%E8%AF%A2%E5%AF%B9%E5%AD%90%E8%A1%A8%E8%BF%9B%E8%A1%8Ccrud%E6%93%8D%E4%BD%9C/"/>
+    <id>http://yoursite.com/2018/03/13/jpa联表查询对子表进行crud操作/</id>
+    <published>2018-03-13T11:41:05.000Z</published>
+    <updated>2018-03-13T11:43:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>jpa使用@OneToMany注解进行两个表之间一对多的关联以方便级联查询。当需要对关联的表进行增删改操作的时候，需要根据实际需求选择合适的方法。</p>
+<p>order表的模型，省略get和set。其中order和installment是一对多关系</p>
+<p>Order.java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;order&quot;)</div><div class="line">@NamedQuery(name = &quot;Order.findAll&quot;, query = &quot;SELECT o FROM Order o&quot;)</div><div class="line">public class Order extends AbstractModel &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 订单号</div><div class="line">     */</div><div class="line">    @Column(name = &quot;order_number&quot;)</div><div class="line">    private String orderNumber;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 总价</div><div class="line">     */</div><div class="line">    @Column(name = &quot;quoted_price&quot;)</div><div class="line">    private BigDecimal quotedPrice;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 分期信息</div><div class="line">     */</div><div class="line">    @OneToMany(cascade = &#123;CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE&#125;, fetch = FetchType.LAZY, orphanRemoval = true)</div><div class="line">    @JoinColumn(name = &quot;order_id&quot;)</div><div class="line">    @Where(clause = &quot;delete_flag = 1&quot;)</div><div class="line">    private List&lt;Installment&gt; installments;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 删除状态</div><div class="line">     */</div><div class="line">    @Enumerated(EnumType.ORDINAL)</div><div class="line">    @Column(name = &quot;delete_flag&quot;)</div><div class="line">    private Status status;</div><div class="line">    ……</div></pre></td></tr></table></figure></p>
+<p>Installment.java</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;installment&quot;)</div><div class="line">@NamedQuery(name = &quot;Installment.findAll&quot;, query = &quot;SELECT o FROM Installment o&quot;)</div><div class="line">public class Installment extends AbstractModel &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 分期主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 订单标识</div><div class="line">     */</div><div class="line">    @Column(name = &quot;order_id&quot;)</div><div class="line">    private Long orderId;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 分期金额</div><div class="line">     */</div><div class="line">    @Column(name = &quot;quoted_price&quot;)</div><div class="line">    private BigDecimal quotedPrice;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 删除标识</div><div class="line">     */</div><div class="line">    @Enumerated(EnumType.ORDINAL)</div><div class="line">    @Column(name = &quot;delete_flag&quot;)</div><div class="line">    private Status status;</div><div class="line">    ……</div></pre></td></tr></table></figure>
+<h3 id="1-被关联表的id不作为其他表的外键关联"><a href="#1-被关联表的id不作为其他表的外键关联" class="headerlink" title="1. 被关联表的id不作为其他表的外键关联"></a>1. 被关联表的id不作为其他表的外键关联</h3><p>如果被关联的表的id没有被其他表的外键关联，可以进行“全删全加”进行被关联表的进行增删改的操作。</p>
+<p>fillingModifyPara</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">order.setOrderNumber(orderDTO.getOrderNumbber());</div><div class="line">order.setQuotedPrice(orderDTO.getQuotedPrice());</div><div class="line">List&lt;InstallmentDTO&gt; installmentDTOs = orderDTO.getInstallments();</div><div class="line">List&lt;Installment&gt; installments = new ArrayList&lt;&gt;();</div><div class="line">for (InstallmentDTO installmentDTO : installmentDTOs) &#123;</div><div class="line">//可以写构造函数进行初始操作</div><div class="line">    Installment installment = new Installment();</div><div class="line">    installment.setOrderId();//修改操作，orderId由前端传入</div><div class="line">    installment.setQuotedPrice(installmentDTO.gettQuotedPrice());</div><div class="line">    installments.add(installment);</div><div class="line">&#125;</div><div class="line">order.getInstallments().clear();</div><div class="line">order.getInstallments().addAll(installments);</div></pre></td></tr></table></figure>
+<p>这种方法将原来关联的表的相关内容先物理删除，再将新的内容全部添加上去。优点是方便简单，没有冗余数据；缺点是被关联的表的id不能作为其他表的外键关联。这里注意不要对installment再定义一个对象后进行order.set的操作，这样会出现两个对象而报错，详情可以参看hb源码。</p>
+<h3 id="2-被关联表的id可能还关联了一堆乱七八糟的东西"><a href="#2-被关联表的id可能还关联了一堆乱七八糟的东西" class="headerlink" title="2. 被关联表的id可能还关联了一堆乱七八糟的东西"></a>2. 被关联表的id可能还关联了一堆乱七八糟的东西</h3><p>当被关联表的id可能还关联了一堆乱七八糟的东西的时候，就不能进行简单的“全删全加”操作来修改关联表的内容。这个时候的做法是现将从数据库中查出的联表信息全部逻辑删除（status设为无效），然后与传入的进行比对，id相同的将status设置为有效，并修改内容；传入的DTO中没有id的作为新增的加入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">order.setOrderNumber(orderDTO.getOrderNumbber());</div><div class="line">order.setQuotedPrice(quotationDTO.getQuotedPrice());</div><div class="line">List&lt;Installment&gt; installments = orders.getInstallments();</div><div class="line">List&lt;InstallmentDTO&gt; installmentDTOS = quotationDTO.getInstallmentList();</div><div class="line">List&lt;Installment&gt; newInstallments = new ArrayList&lt;&gt;();</div><div class="line">installments.forEach(installment -&gt; &#123;installment.setStatus(Status.INVALID);&#125;);</div><div class="line">for (InstallmentDTO installmentDTO : installmentDTOS) &#123;</div><div class="line">    for (Installment installment : installments) &#123;</div><div class="line">        if (installment.getId().equals(installmentDTO.getId())) &#123;</div><div class="line">            installment.setStatus(Status.VALID);</div><div class="line">            installment.setQuotedPrice(installmentDTO.getQuotedPrice());</div><div class="line">            installment.setOrderId();</div><div class="line">                &#125;</div><div class="line">        &#125;</div><div class="line">        if (installmentDTO.getId() == null) &#123;</div><div class="line">            Installment installment = new Installment();</div><div class="line">            installment.setOrderId();</div><div class="line">            installment.setQuotedPrice(installmentDTO.gettQuotedPrice());</div><div class="line">            newInstallments.add(newInstallment);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">installments.addAll(newInstallments);</div><div class="line">orders.setInstallments(installments);</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;jpa使用@OneToMany注解进行两个表之间一对多的关联以方便级联查询。当需要对关联的表进行增删改操作的时候，需要根据实际需求选择合适的方法。&lt;/p&gt;
+&lt;p&gt;order表的模型，省略get和set。其中order和installment是一对多关系&lt;/p&gt;
+&lt;p&gt;Ord
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+      <category term="jpa" scheme="http://yoursite.com/tags/jpa/"/>
+    
+  </entry>
   
   <entry>
     <title>Python2.7 pytesser提取图片中文字信息</title>
