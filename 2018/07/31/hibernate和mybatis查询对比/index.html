@@ -1,0 +1,176 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> hibernate和mybatis查询对比 | Rosy's</title><meta name="description" content="hibernate和mybatis查询对比 - Rosy"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/casual.css"><link rel="stylesheet" href="/css/semantic.min.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Rosy's"></head><body><div class="sidebar"><div class="ui vertical inverted menu"><div class="h100"></div><h3 class="ui inverted aligned icon header"><div class="content"><a href="/" class="title-link">ROSY'S</a></div></h3><div class="h50"></div><div class="side-nav"><a href="/" target="_self" class="item">HOME<i class="icon home"></i></a><a href="/archives" target="_self" class="item">ARCHIVE<i class="icon archive"></i></a><a href="/tags" target="_self" class="item">TAGS<i class="icon tags"></i></a><a href="/about" target="_self" class="item">INFO<i class="icon info"></i></a><a href="/atom.xml" target="_self" class="item">RSS<i class="icon rss"></i></a></div><div class="item"><div class="ui inverted transparent icon input"><input type="text" placeholder="Search..." class="st-default-search-input"><i class="search icon"></i></div></div><div class="h50"></div></div><div class="h50 mq"><a class="ui teal big label"><i class="content icon"></i></a></div><div class="author-info"><a href="/" class="img-link"><img src="/me.jpeg" class="author-photo ui tiny circular image"></a><h4 class="ui aligned icon header"><div class="content">Rosy</div></h4><p class="author-desc">常常将自己分裂成三个人用于玩斗地主的双子女 | 热衷于烹饪 | 喜欢刘亦菲</p><div class="social-outer"><div class="social-inner"><a href="http://github.com/RanWX" target="_blank" class="social-link"><i class="icon github"></i></a><a href="http://weibo.com/u/2176147782?refer_flag=1005055010_&amp;is_all=1" target="_blank" class="social-link"><i class="icon weibo"></i></a></div></div></div></div><div class="main"><div class="wrap"><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">hibernate和mybatis查询对比</h1><div class="post-info"><div class="post-date"><h6 class="ui header"><i class="calendar icon"></i><div class="content">Jul 31, 2018</div></h6></div></div><div class="post-content"><h3 id="1-实体中没有引用对象"><a href="#1-实体中没有引用对象" class="headerlink" title="1. 实体中没有引用对象"></a>1. 实体中没有引用对象</h3><h4 id="1-1-实体编写实例"><a href="#1-1-实体编写实例" class="headerlink" title="1.1 实体编写实例"></a>1.1 实体编写实例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;translator_info_change_log&quot;)</div><div class="line">@NamedQuery(name = &quot;TranslatorInfoChangeLog.findAll&quot;, query = &quot;SELECT o FROM TranslatorInfoChangeLog o&quot;)</div><div class="line">public class TranslatorInfoChangeLog extends AbstractModel &#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line">   </div><div class="line">    @Column(name = &quot;translator_id&quot;)</div><div class="line">    private Long translatorId;</div><div class="line">    </div><div class="line">    @Column(name = &quot;details&quot;)</div><div class="line">    private String details;</div><div class="line">    </div><div class="line">    @Enumerated(EnumType.ORDINAL)</div><div class="line">    @Column(name = &quot;account_status&quot;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>@Entity：标志这是一个数据库实体（pojo）</li>
+<li>@Table：对应数据库的表名</li>
+<li>@Id：标识此列是数据库中的主键</li>
+<li>@GeneratedValue：数据库主键的生成方式，JPA提供的四种标准用法为TABLE（使用一个特定的数据库表格来保存主键），SEQUENCE（根据底层数据库的序列来生成主键，条件是数据库支持序列），IDENTITY（主键由数据库自动生成（主要是自动增长型）），AUTO（主键由程序控制）</li>
+<li>@Column：对应数据库中的列名</li>
+</ul>
+<ol>
+<li>mybatis<br>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</li>
+</ol>
+<h4 id="1-2-查询编写示例"><a href="#1-2-查询编写示例" class="headerlink" title="1.2 查询编写示例"></a>1.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public interface TranslatorInfoChangeLogRepository extends JpaRepository&lt;TranslatorInfoChangeLog, Long&gt;, JpaSpecificationExecutor&lt;TranslatorInfoChangeLog&gt; &#123;</div><div class="line">    // 使用sql语句查询</div><div class="line">    // @Query(value = &quot;select * from translator_info_change_log t where t.id = ?1&quot;, nativeQuery = true)</div><div class="line">    // 使用hql语句查询</div><div class="line">    @Query(value = &quot;select t from TranslatorInfoChangeLog where t.id = ?1&quot;)</div><div class="line">    TranslatorInfoChangeLog findChangeLog(Long id);</div><div class="line">    </div><div class="line">    @Modifying</div><div class="line">    @Query(&quot;update TranslatorInfoChangeLog p set status=0 where p.id in :ids&quot;)</div><div class="line">    void deleteTranslatorInfo(@Param(&quot;ids&quot;) List&lt;Long&gt; ids);</div><div class="line">    </div><div class="line">    TranslatorInfoChangeLog findById(Long id);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>需要继承JpaRepository、JpaSpecificationExecutor</li>
+<li>这里只能返回本实体及其父类</li>
+<li>findById转化成的SQL语句为：select * from modify_log where id = ? </li>
+<li>@Modifying：标识是个更改操作</li>
+<li>@Query：要执行的SQL语句，这不是原生的SQL,可以设置参数（nativeQuery = true），这就可以写原生SQL</li>
+<li>示例中的findChangeLog和findById作用是一样的，findChangeLog是用sql语句进行查询，findById是jpa根据方法名称进行解析后查询。</li>
+</ul>
+<ol>
+<li>mybatis</li>
+</ol>
+<ul>
+<li>编写查询的接口</li>
+<li>直接在查询接口对应的xml文件写sql语句</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;TranslatorInfoChangeLog&gt; queryModifyLog(@Param(&quot;id&quot;) Long id);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;queryModifyLog&quot; resultType=&quot;TranslatorInfoChangeLog&quot; patameterType=&quot;Long&quot;&gt;</div><div class="line">select * from translator_info_change_log where id = ?</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<p>其中查询语句写在<select>标签里。</select></p>
+<h4 id="1-3-建议"><a href="#1-3-建议" class="headerlink" title="1.3 建议"></a>1.3 建议</h4><p>此类查询建议使用JPA完成，开发速度快，只需按规则定义方法名就可以根据不同的字段进行查询，而用mybatis需要编写不同的SQL语句。</p>
+<h3 id="2-实体中存在单实体引用对象（一对一或者多对一）"><a href="#2-实体中存在单实体引用对象（一对一或者多对一）" class="headerlink" title="2. 实体中存在单实体引用对象（一对一或者多对一）"></a>2. 实体中存在单实体引用对象（一对一或者多对一）</h3><h4 id="2-1-实体编写实例（以多对一为例）"><a href="#2-1-实体编写实例（以多对一为例）" class="headerlink" title="2.1 实体编写实例（以多对一为例）"></a>2.1 实体编写实例（以多对一为例）</h4><p>台词和人物信息的关系，多个台词可能都属于同一个人物的。在多的一端（台词表）添加外键（人物的id），与人物表相关联。</p>
+<ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@ManyToOne(cascade = CascadeType.REFRESH, targetEntity = Character.class, optional = true)</div><div class="line">@JoinColumn(name = &quot;character_person_id&quot;)</div><div class="line">private Character character;</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>@ManyToOne：标识关联关系，cascade标识相关级联操作，其中CascadeType.PERSIST：级联新增（又称级联保存，CascadeType.MERGE:级联合并（级联更新），CascadeType.REMOVE:级联删除，CascadeType.REFRESH:级联刷新，CascadeType.ALL:以上四种都是。</li>
+<li>targetEntity 定义关系类的类型，默认是该成员属性对应的类类型，所以通常不需要提供定义。</li>
+<li>optional标识是否可为空。</li>
+<li>@JoinColumn：标识用于关联的字段<br>@ ManyToOne和OneToOne的fetch 属性默认值是FetchType.EAGER</li>
+</ul>
+<ol>
+<li>Mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</p>
+<h4 id="2-2-查询编写示例"><a href="#2-2-查询编写示例" class="headerlink" title="2.2 查询编写示例"></a>2.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<p>正常查询，因为设置了级联查询，会直接查询出来，OneToOne和ManyToOne默认不是延迟加载，所以不用设置就是及时加载.</p>
+<ol>
+<li>mybatis</li>
+</ol>
+<ul>
+<li>返回模型设置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">&lt;association property=&quot;character&quot; column=&quot;character_person_id&quot; javaType=&quot;com.star.ott.scriptsTranslation.domain.Character&quot;&gt;</div><div class="line">    &lt;id property=&quot;id&quot; column=&quot;c_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;name&quot; column=&quot;name&quot;/&gt;</div><div class="line">    &lt;result property=&quot;englishName&quot; column=&quot;english_name&quot;/&gt;</div><div class="line">    &lt;result property=&quot;age&quot; column=&quot;age&quot;/&gt;</div><div class="line">    &lt;result property=&quot;sex&quot; column=&quot;sexjavaType=&quot;com.star.ott.scriptsTranslation.domain.enums.Sex&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandl&quot;/&gt;</div><div class="line">    &lt;result property=&quot;remarks&quot; column=&quot;remarks&quot;/&gt;</div><div class="line">    &lt;result property=&quot;characterType&quot; column=&quot;character_type&quot;</div><div class="line">            javaType=&quot;com.star.ott.scriptsTranslation.domain.enums.CracterType&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandl&quot;/&gt;</div><div class="line">    &lt;result property=&quot;dramaId&quot; column=&quot;dramaId&quot;/&gt;</div><div class="line">&lt;/association&gt;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ul>
+<li>查询语言需要做关联</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;&quot; resultMap=&quot;&quot;&gt;</div><div class="line">……</div><div class="line">LEFT JOIN character_person c ON c.id = l.character_person_id AND c.delete_flag = 1</div><div class="line">……</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>一对一和多对一，实体映射用<association>标签。</association></li>
+</ul>
+<h4 id="2-3-建议"><a href="#2-3-建议" class="headerlink" title="2.3 建议"></a>2.3 建议</h4><p>此类查询建议使用JPA完成，开发速度快，只需要设置实体的注解，mybatis需要join语句，还需要设置返回的resultMap。</p>
+<h3 id="3-实体中存在多实体引用对象（一对多）"><a href="#3-实体中存在多实体引用对象（一对多）" class="headerlink" title="3. 实体中存在多实体引用对象（一对多）"></a>3. 实体中存在多实体引用对象（一对多）</h3><p>例如剧集下存在多个台词，剧集是“一”的一方，台词是“多”的一方，在多的一端（台词表）添加外键（剧集的id），与剧集表相关联。</p>
+<h4 id="3-1-实体编写示例"><a href="#3-1-实体编写示例" class="headerlink" title="3.1 实体编写示例"></a>3.1 实体编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)</div><div class="line">@JoinColumn(name=&quot;episodeid&quot;)</div><div class="line">@Where(clause = &quot;delete_flag = 1&quot;)</div><div class="line">@OrderBy(value = &quot;id asc&quot;)</div><div class="line">private List&lt;Line&gt; lines;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>@OneToMany：标识关联关系，Cascade标识相关级联操作，fetch标识加载方式是懒加载还是及时加载。</li>
+<li>@Where：过滤条件，只查询符合条件的级联表里的记录。</li>
+<li>@OrderBy：对查询的记录进行按字段排序。</li>
+<li>默认是延迟加载。</li>
+</ul>
+<ol>
+<li>mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了hibernate也能使用最好按上面的方式。</p>
+<h4 id="3-2-查询编写示例"><a href="#3-2-查询编写示例" class="headerlink" title="3.2 查询编写示例"></a>3.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<p>正常查询，因为设置了级联查询，会直接查询出来，OneToMany默认是延迟加载</p>
+<ol>
+<li>Mybatis</li>
+</ol>
+<ul>
+<li>返回model设置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">&lt;collection property=&quot;sourceLanguages&quot; column=&quot;line_id&quot; ofType=&quot;com.star.ott.scriptsTranslation.domain.TranslationLine&quot;&gt;</div><div class="line">    &lt;id property=&quot;id&quot; column=&quot;tl_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;translationTaskId&quot; column=&quot;translation_task_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;lineId&quot; column=&quot;line_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;lineStr&quot; column=&quot;line_str&quot;/&gt;</div><div class="line">    &lt;result property=&quot;language&quot; column=&quot;language&quot;</div><div class="line">            javaType=&quot;com.star.ott.scriptsTranslation.domain.enums.Language&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandler&quot;/&gt;</div><div class="line">&lt;/collection&gt;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ul>
+<li>查询语言需要做关联</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;&quot; resultMap=&quot;&quot;&gt;</div><div class="line">……</div><div class="line">LEFT JOIN translation_line tl ON tl.line_id = l.id AND tl.delete_flag = 1 AND tl.translation_task_id IS NULL</div><div class="line">……</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>一对多，实体映射用<collection>标签。</collection></li>
+<li><strong>collection和association标签的实体映射需要放在一起，不能交叉放置，否则会出现错误。</strong></li>
+</ul>
+<h4 id="3-3-建议"><a href="#3-3-建议" class="headerlink" title="3.3 建议"></a>3.3 建议</h4><p>此类查询建议使用hibernate完成，开发速度快，只需要设置实体的注解，mybatis需要join语句，还需要设置返回的resultMap但是执行效率上mybatis会更好一些，如果数据量大，就需要测试后选择。</p>
+<h3 id="4-两个实体间存在中间实体关联（多对多）"><a href="#4-两个实体间存在中间实体关联（多对多）" class="headerlink" title="4. 两个实体间存在中间实体关联（多对多）"></a>4. 两个实体间存在中间实体关联（多对多）</h3><h4 id="4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"><a href="#4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。" class="headerlink" title="4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"></a>4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。</h4><p><strong>例1：</strong> 用户组与权限的关系，一个用户组可以拥有多个权限，一个权限又可包含多个用户组。</p>
+<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/image2017-9-25%209-6-5.png" alt="image"></p>
+<h5 id="4-1-1-实体编写示例"><a href="#4-1-1-实体编写示例" class="headerlink" title="4.1.1 实体编写示例"></a>4.1.1 实体编写示例</h5><ol>
+<li>hibernate</li>
+</ol>
+<p>Role实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_role&quot;)</div><div class="line">public class Role&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column(length=50)</div><div class="line">    private String name;</div><div class="line">    @OneToMany(mappedBy=&quot;role&quot;,cascade=CascadeType.ALL)</div><div class="line">    private Set&lt;RoleResource&gt; roleResources = new HashSet&lt;RoleResource&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Resource实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_resource&quot;)</div><div class="line">public class Resource&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column(length=50)</div><div class="line">    private String name;</div><div class="line">    @OneToMany(mappedBy=&quot;resource&quot;,cascade=CascadeType.ALL)</div><div class="line">    private Set&lt;RoleResource&gt; roleResources = new HashSet&lt;RoleResource&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>RoleResource辅助实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_role_resource&quot;)</div><div class="line">public class Resource&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column</div><div class="line">    private Integer sort;</div><div class="line">    @ManyToOne(cascade=Cascade.ALL)</div><div class="line">    @JoinColumn(name=&quot;roleId&quot;,nullable=true)</div><div class="line">    private Role role;</div><div class="line">    @ManyToOne(cascade=Cascade.ALL)</div><div class="line">    @JoinColumn(name=&quot;resourceId&quot;,nullable=true)</div><div class="line">    private Resource resource;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>mybatis<br>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</li>
+</ol>
+<h5 id="4-1-2-查询示例编写"><a href="#4-1-2-查询示例编写" class="headerlink" title="4.1.2 查询示例编写"></a>4.1.2 查询示例编写</h5><ol>
+<li><p>hibernate<br>正常查询，因为设置了级联查询，会直接查询出来，（查询不同的Dao就会对应生成不同的实体）。</p>
+</li>
+<li><p>mybatis</p>
+</li>
+</ol>
+<ul>
+<li>返回model设置对应的 association 或 collection</li>
+<li>正常sql语句的链表查询</li>
+</ul>
+<h4 id="4-2-两张表与关系表相对各自独立，没有完整级联"><a href="#4-2-两张表与关系表相对各自独立，没有完整级联" class="headerlink" title="4.2 两张表与关系表相对各自独立，没有完整级联"></a>4.2 两张表与关系表相对各自独立，没有完整级联</h4><p><strong>例2：</strong> 例如在translator中的，译员的母语和语言tag之间是多对多关系，tag是数据字典，初始化值后便不会改变。因为语言tag不仅母语需要使用，擅长语言这个属性也需要使用，所以中间表需要加字段“tag类型”用以区分是tag是被谁在使用。</p>
+<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/%E7%BB%98%E5%9B%BE1.png" alt="image"></p>
+<h5 id="4-2-1-实体编写示例"><a href="#4-2-1-实体编写示例" class="headerlink" title="4.2.1 实体编写示例"></a>4.2.1 实体编写示例</h5><ol>
+<li>hibernate</li>
+</ol>
+<p>translator和中间表之间一对多级联，中间表和数据字典之间不做级联，可以由translator对中间表进行crud操作，中间表和数据字典之间的关系需要手动维护。</p>
+<p>translator</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@OneToMany(cascade = &#123;CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE&#125;, fetch = FetchType.LAZY, orphanRemoval = true)</div><div class="line">@JoinColumn(name = &quot;translator_id&quot;)</div><div class="line">@Where(clause = &quot;delete_flag = 1 and dict_type = 2&quot;)</div><div class="line">private Set&lt;TranslatorDictRelation&gt; motherTongue;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>tag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@Id</div><div class="line">@GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">private Long id;</div><div class="line">/**</div><div class="line"> * 数据字典类型</div><div class="line"> */</div><div class="line">@Enumerated(EnumType.ORDINAL)</div><div class="line">@Column(name = &quot;dict_type&quot;)</div><div class="line">private DictType dictType;</div><div class="line">/**</div><div class="line"> * 标签号</div><div class="line"> */</div><div class="line">@Column(name = &quot;tag_num&quot;)</div><div class="line">private Integer tagNum;</div><div class="line">/**</div><div class="line"> * 标签值</div><div class="line"> */</div><div class="line">@Column(name = &quot;tag_value&quot;)</div><div class="line">private String tagValue;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>TranslatorDictRelation</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@Id</div><div class="line">@GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">private Long id;</div><div class="line">/**</div><div class="line"> * 译员id</div><div class="line"> */</div><div class="line">@Column(name = &quot;translator_id&quot;)</div><div class="line">private Long translatorId;</div><div class="line">/**</div><div class="line"> * tag id</div><div class="line"> */</div><div class="line">@Column(name = &quot;dict_id&quot;)</div><div class="line">private Long dictId;</div><div class="line">/**</div><div class="line"> * 数据字典类型</div><div class="line"> */</div><div class="line">@Enumerated(EnumType.ORDINAL)</div><div class="line">@Column(name = &quot;dict_type&quot;)</div><div class="line">private DictType dictType;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ol>
+<li>mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</p>
+<h5 id="4-2-2-查询示例编写"><a href="#4-2-2-查询示例编写" class="headerlink" title="4.2.2 查询示例编写"></a>4.2.2 查询示例编写</h5><ol>
+<li><p>hibernate<br>正常查询，因为设置了级联查询，会直接查询出来，（查询不同的Dao就会对应生成不同的实体）。</p>
+</li>
+<li><p>mybatis</p>
+</li>
+</ol>
+<ul>
+<li>返回model设置对应的 association 或 collection</li>
+<li>正常sql语句的链表查询</li>
+</ul>
+<h4 id="4-3-两张表用ManyToMany级联，实体映射上不与关系表级联"><a href="#4-3-两张表用ManyToMany级联，实体映射上不与关系表级联" class="headerlink" title="4.3 两张表用ManyToMany级联，实体映射上不与关系表级联"></a>4.3 两张表用ManyToMany级联，实体映射上不与关系表级联</h4><p><strong>例3：</strong> 两张多对多表关系均可能出现crud操作，中间表除了作为外键的字段和唯一id，没有其他字段。</p>
+<h5 id="4-3-1-实体编写示例"><a href="#4-3-1-实体编写示例" class="headerlink" title="4.3.1 实体编写示例"></a>4.3.1 实体编写示例</h5><p>TranslatorTest<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;translator_test&quot;)</div><div class="line">@NamedQuery(name = &quot;TranslatorTest.findAll&quot;, query = &quot;SELECT o FROM TranslatorTest o&quot;)</div><div class="line">public class TranslatorTest &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 证件号</div><div class="line">     */</div><div class="line">    @Column(name = &quot;credential_number&quot;)</div><div class="line">    private String credentialNumber;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 空闲时段</div><div class="line">     */</div><div class="line">    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)</div><div class="line">    @JoinTable(name = &quot;translator_dict_relation_test&quot;,</div><div class="line">            joinColumns = &#123;@JoinColumn(name = &quot;translator_id&quot;)&#125;,  // 由哪端进行维护</div><div class="line">            inverseJoinColumns = &#123;@JoinColumn(name = &quot;dict_id&quot;)&#125;) // 可由两张表进行维护关系和查询，用不同的dao就行</div><div class="line">    @OrderBy(&quot;id&quot;)</div><div class="line">    private Set&lt;TagTest&gt; freeTime = new HashSet&lt;&gt;();</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>TagTest<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;tag_test&quot;)</div><div class="line">@NamedQuery(name = &quot;TagTest.findAll&quot;, query = &quot;SELECT o FROM TagTest o&quot;)</div><div class="line">public class TagTest &#123;</div><div class="line">    /**</div><div class="line">     * 主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line">    /**</div><div class="line">     * 标签值</div><div class="line">     */</div><div class="line">    @Column(name = &quot;tag_value&quot;)</div><div class="line">    private String tagValue;</div><div class="line"></div><div class="line">    @ManyToMany(mappedBy = &quot;freeTime&quot;, cascade = CascadeType.ALL) // 映射的字段</div><div class="line">    private Set&lt;TranslatorTest&gt; translatorTestSet = new HashSet&lt;&gt;();</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>中间关系表不需要映射实体，但是需要创建出来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `translator_dict_relation_test`(</div><div class="line">  `id`                 bigint(20)       NOT NULL AUTO_INCREMENT               COMMENT &apos;标识&apos;,</div><div class="line">  `translator_id`      bigint(20)                                             COMMENT &apos;译员项标识&apos;,</div><div class="line">  `dict_id`            bigint(20)                                             COMMENT &apos;数据字典标识&apos;,</div><div class="line">  PRIMARY KEY (`id`),</div><div class="line">  KEY `FK_translator_dict_id` (`translator_id`),</div><div class="line">  KEY `FK_dict_translator_id` (`dict_id`),</div><div class="line">  CONSTRAINT `FK_translator_dict_id` FOREIGN KEY (`translator_id`) REFERENCES `translator_test` (`id`),</div><div class="line">  CONSTRAINT `FK_dict_translator_id` FOREIGN KEY (`dict_id`) REFERENCES `tag_test` (`id`)</div><div class="line">)ENGINE=InnoDB</div><div class="line">COMMENT = &apos;translator_dict_relation_test&apos;</div><div class="line">CHARACTER SET utf8 COLLATE utf8_general_ci;</div></pre></td></tr></table></figure>
+<h5 id="4-3-2-查询示例编写"><a href="#4-3-2-查询示例编写" class="headerlink" title="4.3.2 查询示例编写"></a>4.3.2 查询示例编写</h5><ol>
+<li>JPA<br>正常进行crud操作，JPA会自动对关联的表以及中间表进行相关操作。</li>
+<li>mybatis<br>正常sql语句的链表查询。</li>
+</ol>
+<h4 id="4-4-建议"><a href="#4-4-建议" class="headerlink" title="4.4 建议"></a>4.4 建议</h4><ul>
+<li>此类查询建议使用mybatis完成，使用JPA设置关联关系存在限制性，又容易出现循环关联，查询时不灵活等问题。</li>
+<li>多对多关系的解除由关系维护端来完成，关系被维护端不能解除关系，但是此处需要注意，不建议用级联修改关系。</li>
+<li>多对多关系可以不做表间的外键，而是对单独的表进行增删改查，再维护对应关系表。</li>
+</ul>
+</div></article></div></section><footer><div class="paginator"><a href="/2018/07/31/mybatis-pageHelper插件研究/" class="prev"><button class="ui button teal">PREV</button></a><a href="/2018/03/13/java-BigDecimal比较大小compareTo和equals/" class="next"><button class="ui button teal">NEXT</button></a></div><div class="copyright"><p>© 2016 - 2018 <a href="http://yoursite.com">Rosy</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and theme by <a href="https://github.com/littlewin-wang/hexo-theme-casual" target="_blank">casual</a></p></div></footer></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script><script src="/js/jquery.goup.min.js"></script><script src="/js/semantic.min.js"></script><script src="/js/casual.js"></script><script async src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>$(document).ready(function(){$.goup({trigger:100,bottomOffset:100,locationOffset:5,title:'',titleAsText:true});});</script><script>(function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);})(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+_st('install','TvAnFS4AVxjiJUvrZJRB','2.0.0');</script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></div></body></html>

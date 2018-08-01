@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-13T11:44:20.000Z</updated>
+  <updated>2018-07-31T14:34:50.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,299 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hibernate实体类与数据库表的常见映射</title>
+    <link href="http://yoursite.com/2018/07/31/hibernate%E5%AE%9E%E4%BD%93%E7%B1%BB%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E5%B8%B8%E8%A7%81%E6%98%A0%E5%B0%84/"/>
+    <id>http://yoursite.com/2018/07/31/hibernate实体类与数据库表的常见映射/</id>
+    <published>2018-07-31T14:27:10.000Z</published>
+    <updated>2018-07-31T14:34:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Hibernate的核心功能是根据数据库到实体类的映射，自动从数据库绑定数据到实体类。</p>
+<p>这使我们操作实体类(Java对象)就能对数据库进行增、删、查、改，而不用调用JDBC API使数据操作变得简单而不繁琐。本文主要总结了实体类的各种属性类型到数据库表的映射以及各种关联关系的映射。</p>
+<h3 id="1-基本类型的映射"><a href="#1-基本类型的映射" class="headerlink" title="1. 基本类型的映射"></a>1. 基本类型的映射</h3><p>在业务中常见的基本类型有Integer、Short、Float、Double、Long、Boolean、String。</p>
+<h4 id="1-1-Integer"><a href="#1-1-Integer" class="headerlink" title="1.1 Integer"></a>1.1 Integer</h4><p>实体类的属性用Integer可以映射数据的int类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;integer_number&quot;)</div><div class="line">private Integer integerNumber;</div></pre></td></tr></table></figure>
+<h4 id="1-2-Short"><a href="#1-2-Short" class="headerlink" title="1.2 Short"></a>1.2 Short</h4><p>实体类的属性用Short可以映射数据的tinyint类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;short_num&quot;)</div><div class="line">private Short shortNum;</div></pre></td></tr></table></figure>
+<h4 id="1-3-Float"><a href="#1-3-Float" class="headerlink" title="1.3 Float"></a>1.3 Float</h4><p>实体类的属性用Float可以映射数据的float类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;float_num&quot;)</div><div class="line">private Float floatNum;</div></pre></td></tr></table></figure>
+<h4 id="1-3-Double"><a href="#1-3-Double" class="headerlink" title="1.3 Double"></a>1.3 Double</h4><p>实体类的属性用Double可以映射数据的double类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;Double_num&quot;)</div><div class="line">private Double doubleNum;</div></pre></td></tr></table></figure>
+<h4 id="1-4-Long"><a href="#1-4-Long" class="headerlink" title="1.4 Long"></a>1.4 Long</h4><p>实体类的属性用Long可以映射数据的bigint类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;long_num&quot;)</div><div class="line">private Long longNum;</div></pre></td></tr></table></figure>
+<h4 id="1-5-Boolean"><a href="#1-5-Boolean" class="headerlink" title="1.5 Boolean"></a>1.5 Boolean</h4><p>实体类的属性用Boolean可以映射数据的tinyint类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;boolean_type&quot;)</div><div class="line">private Boolean booleanType;</div></pre></td></tr></table></figure>
+<h4 id="1-6-String"><a href="#1-6-String" class="headerlink" title="1.6 String"></a>1.6 String</h4><p>实体类的属性用String可以映射数据的varchar或者char类型的字段，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;string_type&quot;)</div><div class="line">private String stringType;</div></pre></td></tr></table></figure>
+<h3 id="2-枚举类型的映射"><a href="#2-枚举类型的映射" class="headerlink" title="2. 枚举类型的映射"></a>2. 枚举类型的映射</h3><p>实体类的属性的枚举类型，在数据库表中可以被映射为int，或者tinyint类型的字段，具体视枚举数量的多少决定，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@Enumerated(EnumType.ORDINAL)</div><div class="line">@Column(name = &quot;sex&quot;)</div><div class="line">private Sex sex;</div></pre></td></tr></table></figure>
+<p>其中Sex为枚举类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public enum Sex &#123;</div><div class="line">    MALE(0,&quot;MALE&quot;),</div><div class="line">    FEMALE(1,&quot;FEMALE&quot;),</div><div class="line">    UNKNOWN(2,&quot;UNKNOWN&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-BigDecimal"><a href="#3-BigDecimal" class="headerlink" title="3. BigDecimal"></a>3. BigDecimal</h3><p>实体类的属性的BigDecimal类型，在数据库表中可以被映射为decimal，可以指定精度，模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;charge&quot;)</div><div class="line">private BigDecimal charge;</div></pre></td></tr></table></figure>
+<h3 id="4-时间相关"><a href="#4-时间相关" class="headerlink" title="4. 时间相关"></a>4. 时间相关</h3><p>常用的时间相关的类型是Datetime和Instant，在数据库表中可以被映射为datetime，注意如果不指定datetime的精度，则默认四舍五入到秒，而Instant的默认精度是毫秒，实际值和存储值可能出现1秒的误差。模型为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@Column(name = &quot;instant_date&quot;)</div><div class="line">private Instant instantDate;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Hibernate的核心功能是根据数据库到实体类的映射，自动从数据库绑定数据到实体类。&lt;/p&gt;
+&lt;p&gt;这使我们操作实体类(Java对象)就能对数据库进行增、删、查、改，而不用调用JDBC API使数据操作变得简单而不繁琐。本文主要总结了实体类的各种属性类型到数据库表的映射以
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+      <category term="hibernate" scheme="http://yoursite.com/tags/hibernate/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>mybatis pageHelper插件研究</title>
+    <link href="http://yoursite.com/2018/07/31/mybatis-pageHelper%E6%8F%92%E4%BB%B6%E7%A0%94%E7%A9%B6/"/>
+    <id>http://yoursite.com/2018/07/31/mybatis-pageHelper插件研究/</id>
+    <published>2018-07-31T14:26:50.000Z</published>
+    <updated>2018-07-31T14:34:01.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-mybatis插件"><a href="#1-mybatis插件" class="headerlink" title="1. mybatis插件"></a>1. mybatis插件</h2><p>在mybatis中使用插件，需要先实现接口Interceptor：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public interface Interceptor &#123;</div><div class="line"></div><div class="line">  Object intercept(Invocation invocation) throws Throwable;</div><div class="line"></div><div class="line">  Object plugin(Object target);</div><div class="line"></div><div class="line">  void setProperties(Properties properties);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Interceptor中有三个方法：</p>
+<ul>
+<li>intercept方法：是插件的核心方法，它将直接覆盖你所拦截的对象原有的方法。intercept里有个参数Invocation对象，通过它可以反射调度原料对象的方法。</li>
+<li>plugin方法：target是被拦截对象，plugin方法的作用是给被拦截对象生成一个代理对象并返回。</li>
+<li>setProperties方法：允许在plugin中配置所需要的参数，该方法在插件初始化的时候就被调用一次，然后把插件对象存到配置中，以便后续取出。</li>
+</ul>
+<h2 id="2-PageHelper"><a href="#2-PageHelper" class="headerlink" title="2. PageHelper"></a>2. PageHelper</h2><p>PageHelper会使用ThreadLocal获取到同一线程中的变量信息，各个线程之间的Threadlocal不会相互干扰，也就是Thread1中的ThreadLocal1之后获取到Tread1中的变量的信息，不会获取到Thread2中的信息所以在多线程环境下，各个Threadlocal之间相互隔离，可以实现，不同thread使用不同的数据源或不同的Thread中执行不同的SQL语句，所以，PageHelper利用这一点通过拦截器获取到同一线程中的预编译好的SQL语句之后将SQL语句包装成具有分页功能的SQL语句，并将其再次赋值给下一步操作，所以实际执行的SQL语句就是有了分页功能的SQL语句。</p>
+<p>startPage源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * 开始分页</div><div class="line"> *</div><div class="line"> * @param pageNum  页码</div><div class="line"> * @param pageSize 每页显示数量</div><div class="line"> * @param count    是否进行count查询</div><div class="line"> */</div><div class="line">public static Page startPage(int pageNum, int pageSize, boolean count) &#123;</div><div class="line">    return startPage(pageNum, pageSize, count, null);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最终执行的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static Page startPage(int pageNum, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) &#123;</div><div class="line">    Page page = new Page(pageNum, pageSize, count);</div><div class="line">    page.setReasonable(reasonable);</div><div class="line">    page.setPageSizeZero(pageSizeZero);</div><div class="line">    SqlUtil.setLocalPage(page);</div><div class="line">    return page;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中SqlUtil.setLocalPage是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public static void setLocalPage(Page page) &#123;</div><div class="line">    LOCAL_PAGE.set(page);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>LOCAL_PAGE是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private static final ThreadLocal&lt;Page&gt; LOCAL_PAGE = new ThreadLocal&lt;Page&gt;();</div></pre></td></tr></table></figure>
+<p>PageHelper就是使用ThreadLocal存储了Page对象，在这个对象中有我们设置的pageNum、pageSize，也会查询返回的pages、total。</p>
+<h2 id="3-PageHelper执行过程"><a href="#3-PageHelper执行过程" class="headerlink" title="3. PageHelper执行过程"></a>3. PageHelper执行过程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Page page = PageHelper.startPage(pageNumber, pageSize, true);</div></pre></td></tr></table></figure>
+<p>配置好PageHelper后，在代码中使用PageHelper后，LOCAL_PAGE会存入分页信息。</p>
+<p>在PageHelper下的第一个查询的方法会被PageHelper拦截住，然后重新组装sql语句。具体组装的源码为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">private Object _processPage(Invocation invocation) throws Throwable &#123;</div><div class="line">    final Object[] args = invocation.getArgs();</div><div class="line">    RowBounds rowBounds = (RowBounds) args[2];</div><div class="line">    if (SqlUtil.getLocalPage() == null &amp;&amp; rowBounds == RowBounds.DEFAULT) &#123;</div><div class="line">        if (OrderByHelper.getOrderBy() != null) &#123;</div><div class="line">            OrderByHelper.processIntercept(invocation);</div><div class="line">        &#125;</div><div class="line">        return invocation.proceed();</div><div class="line">    &#125; else &#123;</div><div class="line">        //获取原始的ms</div><div class="line">        MappedStatement ms = (MappedStatement) args[0];</div><div class="line">        //判断并处理为PageSqlSource</div><div class="line">        if (!isPageSqlSource(ms)) &#123;</div><div class="line">            processMappedStatement(ms, parser);</div><div class="line">        &#125;</div><div class="line">        //忽略RowBounds-否则会进行Mybatis自带的内存分页</div><div class="line">        args[2] = RowBounds.DEFAULT;</div><div class="line">        //分页信息</div><div class="line">        Page page = getPage(rowBounds);</div><div class="line">        //pageSizeZero的判断</div><div class="line">        if ((page.getPageSizeZero() != null &amp;&amp; page.getPageSizeZero()) &amp;&amp; page.getPageSize() == 0) &#123;</div><div class="line">            COUNT.set(null);</div><div class="line">            //执行正常（不分页）查询</div><div class="line">            Object result = invocation.proceed();</div><div class="line">            //得到处理结果</div><div class="line">            page.addAll((List) result);</div><div class="line">            //相当于查询第一页</div><div class="line">            page.setPageNum(1);</div><div class="line">            //这种情况相当于pageSize=total</div><div class="line">            page.setPageSize(page.size());</div><div class="line">            //仍然要设置total</div><div class="line">            page.setTotal(page.size());</div><div class="line">            //返回结果仍然为Page类型 - 便于后面对接收类型的统一处理</div><div class="line">            return page;</div><div class="line">        &#125;</div><div class="line">        //简单的通过total的值来判断是否进行count查询</div><div class="line">        if (page.isCount()) &#123;</div><div class="line">            COUNT.set(Boolean.TRUE);</div><div class="line">            //替换MS</div><div class="line">            args[0] = msCountMap.get(ms.getId());</div><div class="line">            //查询总数</div><div class="line">            Object result = invocation.proceed();</div><div class="line">            //还原ms</div><div class="line">            args[0] = ms;</div><div class="line">            //设置总数</div><div class="line">            page.setTotal((Integer) ((List) result).get(0));</div><div class="line">            if (page.getTotal() == 0) &#123;</div><div class="line">                return page;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        //pageSize&gt;0的时候执行分页查询，pageSize&lt;=0的时候不执行相当于可能只返回了一个count</div><div class="line">        if (page.getPageSize() &gt; 0 &amp;&amp;</div><div class="line">                ((rowBounds == RowBounds.DEFAULT &amp;&amp; page.getPageNum() &gt; 0)</div><div class="line">                        || rowBounds != RowBounds.DEFAULT)) &#123;</div><div class="line">            //将参数中的MappedStatement替换为新的qs</div><div class="line">            COUNT.set(null);</div><div class="line">            BoundSql boundSql = ms.getBoundSql(args[1]);</div><div class="line">            args[1] = parser.setPageParameter(ms, args[1], boundSql, page);</div><div class="line">            COUNT.set(Boolean.FALSE);</div><div class="line">            //执行分页查询</div><div class="line">            Object result = invocation.proceed();</div><div class="line">            //得到处理结果</div><div class="line">            page.addAll((List) result);</div><div class="line">        &#125;</div><div class="line">        //返回结果</div><div class="line">        return page;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在实际查询中打印出sql为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">ooo Using Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@25428560]</div><div class="line">==&gt;  Preparing: SELECT count(*) FROM translator t LEFT JOIN account a ON a.translator_id = t.id AND a.delete_flag = 1 WHERE t.delete_flag = 1 AND t.account_status != 0 AND t.account_status != 3 </div><div class="line">==&gt; Parameters: </div><div class="line">&lt;==    Columns: count(*)</div><div class="line">&lt;==        Row: 5</div><div class="line">&lt;==      Total: 1</div><div class="line">ooo Using Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@25428560]</div><div class="line">==&gt;  Preparing: SELECT a.name as name, a.account_id as account_id, a.nick_name as nick_name, t.sex as sex, a.phone_number as phone_number, t.id as id, t.translator_level as translator_level, t.account_status as account_status FROM translator t LEFT JOIN account a on a.translator_id= t.id AND a.delete_flag = 1 WHERE t.delete_flag = 1 and t.account_status != 0 and t.account_status != 3 limit ?,? </div><div class="line">==&gt; Parameters: 0(Integer), 3(Integer)</div><div class="line">&lt;==    Columns: name, account_id, nick_name, sex, phone_number, id, translator_level, account_status</div><div class="line">&lt;==        Row: 121212@163.com, 1, 王五, 0, 13310101001, 1, null, 4</div><div class="line">&lt;==        Row: 222222@qq.com, 9, 张三, 1, 18811221122, 2, null, 4</div><div class="line">&lt;==        Row: lisi, 12, lisi, 0, 13899988223, 4, 1, 4</div><div class="line">&lt;==      Total: 3</div></pre></td></tr></table></figure>
+<p>不加PageHelper打印出的sql为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">ooo Using Connection [com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl@30e836ca]</div><div class="line">==&gt;  Preparing: SELECT a.name as name, a.account_id as account_id, a.nick_name as nick_name, t.sex as sex, a.phone_number as phone_number, t.id as id, t.translator_level as translator_level, t.account_status as account_status FROM translator t LEFT JOIN account a on a.translator_id= t.id AND a.delete_flag = 1 WHERE t.delete_flag = 1 and t.account_status != 0 and t.account_status != 3 </div><div class="line">==&gt; Parameters: </div><div class="line">&lt;==    Columns: name, account_id, nick_name, sex, phone_number, id, translator_level, account_status</div><div class="line">&lt;==        Row: 121212@163.com, 1, 王五, 0, 13310101001, 1, null, 4</div><div class="line">&lt;==        Row: 222222@qq.com, 9, 张三, 1, 18811221122, 2, null, 4</div><div class="line">&lt;==        Row: lisi, 12, lisi, 0, 13899988223, 4, 1, 4</div><div class="line">&lt;==        Row: wangmazi, 15, wangmazi, 0, 17722818182, 18, null, 1</div><div class="line">&lt;==        Row: xiaohua, 14, xiaohua, 1, 16322818182, 19, 0, 4</div><div class="line">&lt;==      Total: 5</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-mybatis插件&quot;&gt;&lt;a href=&quot;#1-mybatis插件&quot; class=&quot;headerlink&quot; title=&quot;1. mybatis插件&quot;&gt;&lt;/a&gt;1. mybatis插件&lt;/h2&gt;&lt;p&gt;在mybatis中使用插件，需要先实现接口Interceptor
+    
+    </summary>
+    
+    
+      <category term="mybatis" scheme="http://yoursite.com/tags/mybatis/"/>
+    
+      <category term="PageHelper" scheme="http://yoursite.com/tags/PageHelper/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hibernate和mybatis查询对比</title>
+    <link href="http://yoursite.com/2018/07/31/hibernate%E5%92%8Cmybatis%E6%9F%A5%E8%AF%A2%E5%AF%B9%E6%AF%94/"/>
+    <id>http://yoursite.com/2018/07/31/hibernate和mybatis查询对比/</id>
+    <published>2018-07-31T14:25:39.000Z</published>
+    <updated>2018-07-31T14:35:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-实体中没有引用对象"><a href="#1-实体中没有引用对象" class="headerlink" title="1. 实体中没有引用对象"></a>1. 实体中没有引用对象</h3><h4 id="1-1-实体编写实例"><a href="#1-1-实体编写实例" class="headerlink" title="1.1 实体编写实例"></a>1.1 实体编写实例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;translator_info_change_log&quot;)</div><div class="line">@NamedQuery(name = &quot;TranslatorInfoChangeLog.findAll&quot;, query = &quot;SELECT o FROM TranslatorInfoChangeLog o&quot;)</div><div class="line">public class TranslatorInfoChangeLog extends AbstractModel &#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line">   </div><div class="line">    @Column(name = &quot;translator_id&quot;)</div><div class="line">    private Long translatorId;</div><div class="line">    </div><div class="line">    @Column(name = &quot;details&quot;)</div><div class="line">    private String details;</div><div class="line">    </div><div class="line">    @Enumerated(EnumType.ORDINAL)</div><div class="line">    @Column(name = &quot;account_status&quot;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>@Entity：标志这是一个数据库实体（pojo）</li>
+<li>@Table：对应数据库的表名</li>
+<li>@Id：标识此列是数据库中的主键</li>
+<li>@GeneratedValue：数据库主键的生成方式，JPA提供的四种标准用法为TABLE（使用一个特定的数据库表格来保存主键），SEQUENCE（根据底层数据库的序列来生成主键，条件是数据库支持序列），IDENTITY（主键由数据库自动生成（主要是自动增长型）），AUTO（主键由程序控制）</li>
+<li>@Column：对应数据库中的列名</li>
+</ul>
+<ol>
+<li>mybatis<br>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</li>
+</ol>
+<h4 id="1-2-查询编写示例"><a href="#1-2-查询编写示例" class="headerlink" title="1.2 查询编写示例"></a>1.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public interface TranslatorInfoChangeLogRepository extends JpaRepository&lt;TranslatorInfoChangeLog, Long&gt;, JpaSpecificationExecutor&lt;TranslatorInfoChangeLog&gt; &#123;</div><div class="line">    // 使用sql语句查询</div><div class="line">    // @Query(value = &quot;select * from translator_info_change_log t where t.id = ?1&quot;, nativeQuery = true)</div><div class="line">    // 使用hql语句查询</div><div class="line">    @Query(value = &quot;select t from TranslatorInfoChangeLog where t.id = ?1&quot;)</div><div class="line">    TranslatorInfoChangeLog findChangeLog(Long id);</div><div class="line">    </div><div class="line">    @Modifying</div><div class="line">    @Query(&quot;update TranslatorInfoChangeLog p set status=0 where p.id in :ids&quot;)</div><div class="line">    void deleteTranslatorInfo(@Param(&quot;ids&quot;) List&lt;Long&gt; ids);</div><div class="line">    </div><div class="line">    TranslatorInfoChangeLog findById(Long id);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>需要继承JpaRepository、JpaSpecificationExecutor</li>
+<li>这里只能返回本实体及其父类</li>
+<li>findById转化成的SQL语句为：select * from modify_log where id = ? </li>
+<li>@Modifying：标识是个更改操作</li>
+<li>@Query：要执行的SQL语句，这不是原生的SQL,可以设置参数（nativeQuery = true），这就可以写原生SQL</li>
+<li>示例中的findChangeLog和findById作用是一样的，findChangeLog是用sql语句进行查询，findById是jpa根据方法名称进行解析后查询。</li>
+</ul>
+<ol>
+<li>mybatis</li>
+</ol>
+<ul>
+<li>编写查询的接口</li>
+<li>直接在查询接口对应的xml文件写sql语句</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;TranslatorInfoChangeLog&gt; queryModifyLog(@Param(&quot;id&quot;) Long id);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;queryModifyLog&quot; resultType=&quot;TranslatorInfoChangeLog&quot; patameterType=&quot;Long&quot;&gt;</div><div class="line">select * from translator_info_change_log where id = ?</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<p>其中查询语句写在<select>标签里。</select></p>
+<h4 id="1-3-建议"><a href="#1-3-建议" class="headerlink" title="1.3 建议"></a>1.3 建议</h4><p>此类查询建议使用JPA完成，开发速度快，只需按规则定义方法名就可以根据不同的字段进行查询，而用mybatis需要编写不同的SQL语句。</p>
+<h3 id="2-实体中存在单实体引用对象（一对一或者多对一）"><a href="#2-实体中存在单实体引用对象（一对一或者多对一）" class="headerlink" title="2. 实体中存在单实体引用对象（一对一或者多对一）"></a>2. 实体中存在单实体引用对象（一对一或者多对一）</h3><h4 id="2-1-实体编写实例（以多对一为例）"><a href="#2-1-实体编写实例（以多对一为例）" class="headerlink" title="2.1 实体编写实例（以多对一为例）"></a>2.1 实体编写实例（以多对一为例）</h4><p>台词和人物信息的关系，多个台词可能都属于同一个人物的。在多的一端（台词表）添加外键（人物的id），与人物表相关联。</p>
+<ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@ManyToOne(cascade = CascadeType.REFRESH, targetEntity = Character.class, optional = true)</div><div class="line">@JoinColumn(name = &quot;character_person_id&quot;)</div><div class="line">private Character character;</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>@ManyToOne：标识关联关系，cascade标识相关级联操作，其中CascadeType.PERSIST：级联新增（又称级联保存，CascadeType.MERGE:级联合并（级联更新），CascadeType.REMOVE:级联删除，CascadeType.REFRESH:级联刷新，CascadeType.ALL:以上四种都是。</li>
+<li>targetEntity 定义关系类的类型，默认是该成员属性对应的类类型，所以通常不需要提供定义。</li>
+<li>optional标识是否可为空。</li>
+<li>@JoinColumn：标识用于关联的字段<br>@ ManyToOne和OneToOne的fetch 属性默认值是FetchType.EAGER</li>
+</ul>
+<ol>
+<li>Mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</p>
+<h4 id="2-2-查询编写示例"><a href="#2-2-查询编写示例" class="headerlink" title="2.2 查询编写示例"></a>2.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<p>正常查询，因为设置了级联查询，会直接查询出来，OneToOne和ManyToOne默认不是延迟加载，所以不用设置就是及时加载.</p>
+<ol>
+<li>mybatis</li>
+</ol>
+<ul>
+<li>返回模型设置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">&lt;association property=&quot;character&quot; column=&quot;character_person_id&quot; javaType=&quot;com.star.ott.scriptsTranslation.domain.Character&quot;&gt;</div><div class="line">    &lt;id property=&quot;id&quot; column=&quot;c_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;name&quot; column=&quot;name&quot;/&gt;</div><div class="line">    &lt;result property=&quot;englishName&quot; column=&quot;english_name&quot;/&gt;</div><div class="line">    &lt;result property=&quot;age&quot; column=&quot;age&quot;/&gt;</div><div class="line">    &lt;result property=&quot;sex&quot; column=&quot;sexjavaType=&quot;com.star.ott.scriptsTranslation.domain.enums.Sex&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandl&quot;/&gt;</div><div class="line">    &lt;result property=&quot;remarks&quot; column=&quot;remarks&quot;/&gt;</div><div class="line">    &lt;result property=&quot;characterType&quot; column=&quot;character_type&quot;</div><div class="line">            javaType=&quot;com.star.ott.scriptsTranslation.domain.enums.CracterType&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandl&quot;/&gt;</div><div class="line">    &lt;result property=&quot;dramaId&quot; column=&quot;dramaId&quot;/&gt;</div><div class="line">&lt;/association&gt;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ul>
+<li>查询语言需要做关联</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;&quot; resultMap=&quot;&quot;&gt;</div><div class="line">……</div><div class="line">LEFT JOIN character_person c ON c.id = l.character_person_id AND c.delete_flag = 1</div><div class="line">……</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>一对一和多对一，实体映射用<association>标签。</association></li>
+</ul>
+<h4 id="2-3-建议"><a href="#2-3-建议" class="headerlink" title="2.3 建议"></a>2.3 建议</h4><p>此类查询建议使用JPA完成，开发速度快，只需要设置实体的注解，mybatis需要join语句，还需要设置返回的resultMap。</p>
+<h3 id="3-实体中存在多实体引用对象（一对多）"><a href="#3-实体中存在多实体引用对象（一对多）" class="headerlink" title="3. 实体中存在多实体引用对象（一对多）"></a>3. 实体中存在多实体引用对象（一对多）</h3><p>例如剧集下存在多个台词，剧集是“一”的一方，台词是“多”的一方，在多的一端（台词表）添加外键（剧集的id），与剧集表相关联。</p>
+<h4 id="3-1-实体编写示例"><a href="#3-1-实体编写示例" class="headerlink" title="3.1 实体编写示例"></a>3.1 实体编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)</div><div class="line">@JoinColumn(name=&quot;episodeid&quot;)</div><div class="line">@Where(clause = &quot;delete_flag = 1&quot;)</div><div class="line">@OrderBy(value = &quot;id asc&quot;)</div><div class="line">private List&lt;Line&gt; lines;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>@OneToMany：标识关联关系，Cascade标识相关级联操作，fetch标识加载方式是懒加载还是及时加载。</li>
+<li>@Where：过滤条件，只查询符合条件的级联表里的记录。</li>
+<li>@OrderBy：对查询的记录进行按字段排序。</li>
+<li>默认是延迟加载。</li>
+</ul>
+<ol>
+<li>mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了hibernate也能使用最好按上面的方式。</p>
+<h4 id="3-2-查询编写示例"><a href="#3-2-查询编写示例" class="headerlink" title="3.2 查询编写示例"></a>3.2 查询编写示例</h4><ol>
+<li>hibernate</li>
+</ol>
+<p>正常查询，因为设置了级联查询，会直接查询出来，OneToMany默认是延迟加载</p>
+<ol>
+<li>Mybatis</li>
+</ol>
+<ul>
+<li>返回model设置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">&lt;collection property=&quot;sourceLanguages&quot; column=&quot;line_id&quot; ofType=&quot;com.star.ott.scriptsTranslation.domain.TranslationLine&quot;&gt;</div><div class="line">    &lt;id property=&quot;id&quot; column=&quot;tl_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;translationTaskId&quot; column=&quot;translation_task_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;lineId&quot; column=&quot;line_id&quot;/&gt;</div><div class="line">    &lt;result property=&quot;lineStr&quot; column=&quot;line_str&quot;/&gt;</div><div class="line">    &lt;result property=&quot;language&quot; column=&quot;language&quot;</div><div class="line">            javaType=&quot;com.star.ott.scriptsTranslation.domain.enums.Language&quot;</div><div class="line">            typeHandler=&quot;org.apache.ibatis.type.EnumOrdinalTypeHandler&quot;/&gt;</div><div class="line">&lt;/collection&gt;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ul>
+<li>查询语言需要做关联</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;select id=&quot;&quot; resultMap=&quot;&quot;&gt;</div><div class="line">……</div><div class="line">LEFT JOIN translation_line tl ON tl.line_id = l.id AND tl.delete_flag = 1 AND tl.translation_task_id IS NULL</div><div class="line">……</div><div class="line">&lt;/select&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>一对多，实体映射用<collection>标签。</collection></li>
+<li><strong>collection和association标签的实体映射需要放在一起，不能交叉放置，否则会出现错误。</strong></li>
+</ul>
+<h4 id="3-3-建议"><a href="#3-3-建议" class="headerlink" title="3.3 建议"></a>3.3 建议</h4><p>此类查询建议使用hibernate完成，开发速度快，只需要设置实体的注解，mybatis需要join语句，还需要设置返回的resultMap但是执行效率上mybatis会更好一些，如果数据量大，就需要测试后选择。</p>
+<h3 id="4-两个实体间存在中间实体关联（多对多）"><a href="#4-两个实体间存在中间实体关联（多对多）" class="headerlink" title="4. 两个实体间存在中间实体关联（多对多）"></a>4. 两个实体间存在中间实体关联（多对多）</h3><h4 id="4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"><a href="#4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。" class="headerlink" title="4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"></a>4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。</h4><p><strong>例1：</strong> 用户组与权限的关系，一个用户组可以拥有多个权限，一个权限又可包含多个用户组。</p>
+<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/image2017-9-25%209-6-5.png" alt="image"></p>
+<h5 id="4-1-1-实体编写示例"><a href="#4-1-1-实体编写示例" class="headerlink" title="4.1.1 实体编写示例"></a>4.1.1 实体编写示例</h5><ol>
+<li>hibernate</li>
+</ol>
+<p>Role实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_role&quot;)</div><div class="line">public class Role&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column(length=50)</div><div class="line">    private String name;</div><div class="line">    @OneToMany(mappedBy=&quot;role&quot;,cascade=CascadeType.ALL)</div><div class="line">    private Set&lt;RoleResource&gt; roleResources = new HashSet&lt;RoleResource&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Resource实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_resource&quot;)</div><div class="line">public class Resource&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column(length=50)</div><div class="line">    private String name;</div><div class="line">    @OneToMany(mappedBy=&quot;resource&quot;,cascade=CascadeType.ALL)</div><div class="line">    private Set&lt;RoleResource&gt; roleResources = new HashSet&lt;RoleResource&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>RoleResource辅助实体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name=&quot;glw_role_resource&quot;)</div><div class="line">public class Resource&#123;</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy=GenerationType.TABLE)</div><div class="line">    private Long id;</div><div class="line">    @Column</div><div class="line">    private Integer sort;</div><div class="line">    @ManyToOne(cascade=Cascade.ALL)</div><div class="line">    @JoinColumn(name=&quot;roleId&quot;,nullable=true)</div><div class="line">    private Role role;</div><div class="line">    @ManyToOne(cascade=Cascade.ALL)</div><div class="line">    @JoinColumn(name=&quot;resourceId&quot;,nullable=true)</div><div class="line">    private Resource resource;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>mybatis<br>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</li>
+</ol>
+<h5 id="4-1-2-查询示例编写"><a href="#4-1-2-查询示例编写" class="headerlink" title="4.1.2 查询示例编写"></a>4.1.2 查询示例编写</h5><ol>
+<li><p>hibernate<br>正常查询，因为设置了级联查询，会直接查询出来，（查询不同的Dao就会对应生成不同的实体）。</p>
+</li>
+<li><p>mybatis</p>
+</li>
+</ol>
+<ul>
+<li>返回model设置对应的 association 或 collection</li>
+<li>正常sql语句的链表查询</li>
+</ul>
+<h4 id="4-2-两张表与关系表相对各自独立，没有完整级联"><a href="#4-2-两张表与关系表相对各自独立，没有完整级联" class="headerlink" title="4.2 两张表与关系表相对各自独立，没有完整级联"></a>4.2 两张表与关系表相对各自独立，没有完整级联</h4><p><strong>例2：</strong> 例如在translator中的，译员的母语和语言tag之间是多对多关系，tag是数据字典，初始化值后便不会改变。因为语言tag不仅母语需要使用，擅长语言这个属性也需要使用，所以中间表需要加字段“tag类型”用以区分是tag是被谁在使用。</p>
+<p><img src="http://7ycyh7.com1.z1.glb.clouddn.com/%E7%BB%98%E5%9B%BE1.png" alt="image"></p>
+<h5 id="4-2-1-实体编写示例"><a href="#4-2-1-实体编写示例" class="headerlink" title="4.2.1 实体编写示例"></a>4.2.1 实体编写示例</h5><ol>
+<li>hibernate</li>
+</ol>
+<p>translator和中间表之间一对多级联，中间表和数据字典之间不做级联，可以由translator对中间表进行crud操作，中间表和数据字典之间的关系需要手动维护。</p>
+<p>translator</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@OneToMany(cascade = &#123;CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE&#125;, fetch = FetchType.LAZY, orphanRemoval = true)</div><div class="line">@JoinColumn(name = &quot;translator_id&quot;)</div><div class="line">@Where(clause = &quot;delete_flag = 1 and dict_type = 2&quot;)</div><div class="line">private Set&lt;TranslatorDictRelation&gt; motherTongue;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>tag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@Id</div><div class="line">@GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">private Long id;</div><div class="line">/**</div><div class="line"> * 数据字典类型</div><div class="line"> */</div><div class="line">@Enumerated(EnumType.ORDINAL)</div><div class="line">@Column(name = &quot;dict_type&quot;)</div><div class="line">private DictType dictType;</div><div class="line">/**</div><div class="line"> * 标签号</div><div class="line"> */</div><div class="line">@Column(name = &quot;tag_num&quot;)</div><div class="line">private Integer tagNum;</div><div class="line">/**</div><div class="line"> * 标签值</div><div class="line"> */</div><div class="line">@Column(name = &quot;tag_value&quot;)</div><div class="line">private String tagValue;</div><div class="line">……</div></pre></td></tr></table></figure>
+<p>TranslatorDictRelation</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">……</div><div class="line">@Id</div><div class="line">@GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">private Long id;</div><div class="line">/**</div><div class="line"> * 译员id</div><div class="line"> */</div><div class="line">@Column(name = &quot;translator_id&quot;)</div><div class="line">private Long translatorId;</div><div class="line">/**</div><div class="line"> * tag id</div><div class="line"> */</div><div class="line">@Column(name = &quot;dict_id&quot;)</div><div class="line">private Long dictId;</div><div class="line">/**</div><div class="line"> * 数据字典类型</div><div class="line"> */</div><div class="line">@Enumerated(EnumType.ORDINAL)</div><div class="line">@Column(name = &quot;dict_type&quot;)</div><div class="line">private DictType dictType;</div><div class="line">……</div></pre></td></tr></table></figure>
+<ol>
+<li>mybatis</li>
+</ol>
+<p>直接使用上面JPA的数据模型就可以，也可以不加上面的所有注解，为了JPA也能使用最好按上面的方式。</p>
+<h5 id="4-2-2-查询示例编写"><a href="#4-2-2-查询示例编写" class="headerlink" title="4.2.2 查询示例编写"></a>4.2.2 查询示例编写</h5><ol>
+<li><p>hibernate<br>正常查询，因为设置了级联查询，会直接查询出来，（查询不同的Dao就会对应生成不同的实体）。</p>
+</li>
+<li><p>mybatis</p>
+</li>
+</ol>
+<ul>
+<li>返回model设置对应的 association 或 collection</li>
+<li>正常sql语句的链表查询</li>
+</ul>
+<h4 id="4-3-两张表用ManyToMany级联，实体映射上不与关系表级联"><a href="#4-3-两张表用ManyToMany级联，实体映射上不与关系表级联" class="headerlink" title="4.3 两张表用ManyToMany级联，实体映射上不与关系表级联"></a>4.3 两张表用ManyToMany级联，实体映射上不与关系表级联</h4><p><strong>例3：</strong> 两张多对多表关系均可能出现crud操作，中间表除了作为外键的字段和唯一id，没有其他字段。</p>
+<h5 id="4-3-1-实体编写示例"><a href="#4-3-1-实体编写示例" class="headerlink" title="4.3.1 实体编写示例"></a>4.3.1 实体编写示例</h5><p>TranslatorTest<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;translator_test&quot;)</div><div class="line">@NamedQuery(name = &quot;TranslatorTest.findAll&quot;, query = &quot;SELECT o FROM TranslatorTest o&quot;)</div><div class="line">public class TranslatorTest &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 证件号</div><div class="line">     */</div><div class="line">    @Column(name = &quot;credential_number&quot;)</div><div class="line">    private String credentialNumber;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 空闲时段</div><div class="line">     */</div><div class="line">    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)</div><div class="line">    @JoinTable(name = &quot;translator_dict_relation_test&quot;,</div><div class="line">            joinColumns = &#123;@JoinColumn(name = &quot;translator_id&quot;)&#125;,  // 由哪端进行维护</div><div class="line">            inverseJoinColumns = &#123;@JoinColumn(name = &quot;dict_id&quot;)&#125;) // 可由两张表进行维护关系和查询，用不同的dao就行</div><div class="line">    @OrderBy(&quot;id&quot;)</div><div class="line">    private Set&lt;TagTest&gt; freeTime = new HashSet&lt;&gt;();</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>TagTest<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@Entity</div><div class="line">@Table(name = &quot;tag_test&quot;)</div><div class="line">@NamedQuery(name = &quot;TagTest.findAll&quot;, query = &quot;SELECT o FROM TagTest o&quot;)</div><div class="line">public class TagTest &#123;</div><div class="line">    /**</div><div class="line">     * 主键</div><div class="line">     */</div><div class="line">    @Id</div><div class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</div><div class="line">    private Long id;</div><div class="line">    /**</div><div class="line">     * 标签值</div><div class="line">     */</div><div class="line">    @Column(name = &quot;tag_value&quot;)</div><div class="line">    private String tagValue;</div><div class="line"></div><div class="line">    @ManyToMany(mappedBy = &quot;freeTime&quot;, cascade = CascadeType.ALL) // 映射的字段</div><div class="line">    private Set&lt;TranslatorTest&gt; translatorTestSet = new HashSet&lt;&gt;();</div><div class="line">    ……</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>中间关系表不需要映射实体，但是需要创建出来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `translator_dict_relation_test`(</div><div class="line">  `id`                 bigint(20)       NOT NULL AUTO_INCREMENT               COMMENT &apos;标识&apos;,</div><div class="line">  `translator_id`      bigint(20)                                             COMMENT &apos;译员项标识&apos;,</div><div class="line">  `dict_id`            bigint(20)                                             COMMENT &apos;数据字典标识&apos;,</div><div class="line">  PRIMARY KEY (`id`),</div><div class="line">  KEY `FK_translator_dict_id` (`translator_id`),</div><div class="line">  KEY `FK_dict_translator_id` (`dict_id`),</div><div class="line">  CONSTRAINT `FK_translator_dict_id` FOREIGN KEY (`translator_id`) REFERENCES `translator_test` (`id`),</div><div class="line">  CONSTRAINT `FK_dict_translator_id` FOREIGN KEY (`dict_id`) REFERENCES `tag_test` (`id`)</div><div class="line">)ENGINE=InnoDB</div><div class="line">COMMENT = &apos;translator_dict_relation_test&apos;</div><div class="line">CHARACTER SET utf8 COLLATE utf8_general_ci;</div></pre></td></tr></table></figure>
+<h5 id="4-3-2-查询示例编写"><a href="#4-3-2-查询示例编写" class="headerlink" title="4.3.2 查询示例编写"></a>4.3.2 查询示例编写</h5><ol>
+<li>JPA<br>正常进行crud操作，JPA会自动对关联的表以及中间表进行相关操作。</li>
+<li>mybatis<br>正常sql语句的链表查询。</li>
+</ol>
+<h4 id="4-4-建议"><a href="#4-4-建议" class="headerlink" title="4.4 建议"></a>4.4 建议</h4><ul>
+<li>此类查询建议使用mybatis完成，使用JPA设置关联关系存在限制性，又容易出现循环关联，查询时不灵活等问题。</li>
+<li>多对多关系的解除由关系维护端来完成，关系被维护端不能解除关系，但是此处需要注意，不建议用级联修改关系。</li>
+<li>多对多关系可以不做表间的外键，而是对单独的表进行增删改查，再维护对应关系表。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-实体中没有引用对象&quot;&gt;&lt;a href=&quot;#1-实体中没有引用对象&quot; class=&quot;headerlink&quot; title=&quot;1. 实体中没有引用对象&quot;&gt;&lt;/a&gt;1. 实体中没有引用对象&lt;/h3&gt;&lt;h4 id=&quot;1-1-实体编写实例&quot;&gt;&lt;a href=&quot;#1-1-实
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+      <category term="hibernate" scheme="http://yoursite.com/tags/hibernate/"/>
+    
+      <category term="mybatis" scheme="http://yoursite.com/tags/mybatis/"/>
+    
+  </entry>
   
   <entry>
     <title>java BigDecimal比较大小compareTo和equals</title>
@@ -930,9 +1223,9 @@
     
       <category term="网络" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C/"/>
     
-      <category term="http" scheme="http://yoursite.com/tags/http/"/>
-    
       <category term="nginx" scheme="http://yoursite.com/tags/nginx/"/>
+    
+      <category term="http" scheme="http://yoursite.com/tags/http/"/>
     
   </entry>
   
