@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-04-10T11:20:46.000Z</updated>
+  <updated>2019-04-10T11:33:40.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,251 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>logstash学习（二）—— 配置文件运行</title>
-    <link href="http://yoursite.com/2019/04/10/logstash%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8C/"/>
-    <id>http://yoursite.com/2019/04/10/logstash配置文件运行/</id>
-    <published>2019-04-10T11:13:29.000Z</published>
-    <updated>2019-04-10T11:20:46.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>在实际生产环境中，logstash常常需要用到复杂的运行规则，使用命令行显然不可取。所以可以自定义规则文件，然后让Logstash根据规则进行工作。</p>
-<h2 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1. 配置文件"></a>1. 配置文件</h2><p>配置文件结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">input&#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">filter&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">output&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>配置文件主要有input，output和filter三个大的部分构成。input是数据的输入源，可以是来自文件，网站，redis，s3等。output是数据的输出，可以输出到文件，elasticsearch，邮件，kafka等。filter是过滤规则，根据需要进行内容的过滤。</p>
-<p>将配置文件放在logstash下的config目录中。进入logstash的bin目录，运行配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd logstash-6.3.2/bin/</div><div class="line"># ./logstash -f /root/logstash-6.5.0/config/test.conf</div></pre></td></tr></table></figure>
-<h2 id="2-常用插件"><a href="#2-常用插件" class="headerlink" title="2. 常用插件"></a>2. 常用插件</h2><p>例，如下的配置文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">cat UGA-MTN.conf </div><div class="line">input &#123;</div><div class="line">  s3&#123;</div><div class="line">    access_key_id =&gt; &quot;ACCESS_KEY_ID&quot;</div><div class="line">    secret_access_key =&gt; &quot;SECRET_ACCESS_KEY&quot;</div><div class="line">    bucket =&gt; &quot;your_bucket&quot;</div><div class="line">    region =&gt; &quot;your_s3_region&quot;</div><div class="line">    interval =&gt; 600</div><div class="line">    prefix =&gt; &quot;……&quot; </div><div class="line">    exclude_pattern =&gt; &quot;……&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">  urldecode&#123;</div><div class="line">    all_fields =&gt; true</div><div class="line">  &#125;</div><div class="line">  grok&#123;</div><div class="line">    match =&gt; &#123;&quot;message&quot; =&gt; &quot;%&#123;TIMESTAMP_ISO8601:log_date&#125;\s%&#123;NOTSPACE:log_name&#125;\s(?:%&#123;NOTSPACE:request_body&#125;)&quot;&#125;</div><div class="line">    remove_field =&gt; [&quot;log_name&quot;]</div><div class="line">  &#125;</div><div class="line">  json &#123;</div><div class="line">    source =&gt; &quot;request_body&quot;</div><div class="line">    remove_field =&gt; [&quot;request_body&quot;]</div><div class="line">  &#125;</div><div class="line">  mutate&#123;</div><div class="line">    add_field =&gt; &#123;</div><div class="line">      &quot;rack&quot; =&gt; &quot;……&quot;</div><div class="line">    &#125;</div><div class="line">    convert =&gt; &#123;</div><div class="line">      &quot;request_time&quot; =&gt; &quot;integer&quot;</div><div class="line">      &quot;status&quot; =&gt; &quot;integer&quot;</div><div class="line">      &quot;bytes_sent&quot; =&gt; &quot;integer&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">  elasticsearch &#123;</div><div class="line">    action =&gt; &quot;index&quot;                                       #The operation on ES</div><div class="line">    hosts =&gt; [&quot;192.168.32.20:9200&quot;]   #ElasticSearch host, can be array.</div><div class="line">    index =&gt; &quot;cache_log_%&#123;+YYYY.MM.dd&#125;&quot;                     #The index to write data to.</div><div class="line">    document_type =&gt; &quot;logs&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="2-1-输入插件s3"><a href="#2-1-输入插件s3" class="headerlink" title="2.1 输入插件s3"></a>2.1 输入插件s3</h3><p>s3插件可以从s3上获取数据。常用参数有：</p>
-<ul>
-<li>access_key_id: String类型，没有默认值。用于获取s3的验证。</li>
-<li>aws_credentials_file：String类型，没有默认值。用于获取s3的验证。当access_key_id和secret_access_key没有设置的时候，才会加载这个文件。</li>
-<li>secret_access_key：String类型，默认值是“logstash”，根据实际情况进行修改。</li>
-</ul>
-<p>注：常用的获取s3验证的方法有：</p>
-<ol>
-<li>access_key_id和ecret_access_key进行配置；</li>
-<li>配置aws_credentials_file从外部文件进行获取；</li>
-<li>将AWS_ACCESS_KEY_ID和AWS_SECRET_ACCESS_KEY配置到环境变量中。</li>
-<li>将AMAZON_ACCESS_KEY_ID和AMAZON_SECRET_ACCESS_KEY配置到环境变量中。</li>
-<li>IAM实例的证书。</li>
-</ol>
-<ul>
-<li>bucket，String类型必选参数且没有默认值。需要获取数据的s3的桶的名称。</li>
-<li>region，String类型，默认值是“us-east-1”，表示AWS所在的位置区域。</li>
-<li>interval，number类型，默认值是60，单位是秒。两次获取数据的间隔时间。</li>
-<li>prefix，String类型，默认值是nil。表示表示在桶里面需要匹配的文件前缀，不是一个正则表达式。</li>
-<li>exclude_pattern，String类型，默认值是nil。正则匹配需要从桶里面排除的文件。</li>
-<li>temporary_directory，String类型，默认值是“/tmp/logstash”，用于临时保存从s3下载的文件，可以根据需求进行修改路径。</li>
-</ul>
-<p>其他参数详见官方文档：<a href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-s3.html" target="_blank" rel="external">s3插件说明</a></p>
-<h3 id="2-2-输出插件elasticsearch"><a href="#2-2-输出插件elasticsearch" class="headerlink" title="2.2 输出插件elasticsearch"></a>2.2 输出插件elasticsearch</h3><p>elasticsearch只支持HTTP协议，logstash和elasticsearch的交互也优先使用HTTP协议。HTTP协议尽管稍微慢一点，但是很好控制和使用。</p>
-<ul>
-<li>action，，String类型，默认值是index。表示elasticsearch要进行的操作。有效操作有: index：为文件编索引；delete：根据id删除文件；create：为文件指定创建的索引，如果索引已经存在，则创建失败；update：根据id更新文件信息。</li>
-<li>hosts，类型是Uri，默认值是[//127.0.0.1]。设置远程实例的主机，可以在数组里放多个ip设置多台主机。</li>
-<li>index，String类型，默认值是logstash-%{+YYYY.MM.dd}。用于设置数据写入的index名称。</li>
-</ul>
-<p>其他参数详见官方文档：<a href="https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html" target="_blank" rel="external">elasticsearch插件说明</a></p>
-<h3 id="2-3-filter插件"><a href="#2-3-filter插件" class="headerlink" title="2.3 filter插件"></a>2.3 filter插件</h3><ul>
-<li>urldecode：Nginx作为反向代理服务器，部分日志在传输的过程中是通过“urlencoded”编码的，通过logstash收集上来的日志需要用urldecode将字符串还原为原来的格式。</li>
-</ul>
-<p>Urldecode常用的配置选项：</p>
-<ol>
-<li><p>all_fields：对所有的值进行url的解码，默认值为false</p>
-</li>
-<li><p>Charset：设置解码使用的字符集，默认为“utf-8”。</p>
-</li>
-</ol>
-<ul>
-<li>grok是通过系统预定义的正则表达式或者通过自己定义正则表达式来匹配日志中的各个值，在使用时自己可以根据自己的日志格式或者对匹配正则进行调整或者直接调用。如果，自己想在其他目录定义正则规则匹配日志，在使用时需要指定正则的路径。</li>
-<li>mutate主要用来修改、替换、删除及重命名字段中的某些插件。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;在实际生产环境中，logstash常常需要用到复杂的运行规则，使用命令行显然不可取。所以可以自定义规则文件，然后让Logstash根据规则进行工作。&lt;/p&gt;
-&lt;h2 id=&quot;1-配置文件&quot;&gt;&lt;a href=&quot;#1-配置文件&quot; class=&quot;headerlink&quot; title
-    
-    </summary>
-    
-    
-      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>logstash学习（五）—— aggregate插件使用</title>
-    <link href="http://yoursite.com/2019/04/10/logstash-aggregate%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2019/04/10/logstash-aggregate插件使用/</id>
-    <published>2019-04-10T11:13:23.000Z</published>
-    <updated>2019-04-10T11:28:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>aggregate可以将将属于一个task的多个events的信息聚合在一起，并最终聚合到最后一个events中。使用时要注意一定要将worker数量设置成1（在logstash安装目录下的config目录下，logstash.yml文件，默认的worker数量和cpu的内核数量一致），否则处理顺序错乱会导致未知的结果。</p>
-<h3 id="1-例一：输入有开始和结束标志的"><a href="#1-例一：输入有开始和结束标志的" class="headerlink" title="1. 例一：输入有开始和结束标志的"></a>1. 例一：输入有开始和结束标志的</h3><p>输入日志如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - TASK_START - start</div><div class="line">INFO - 12345 - SQL - sqlQuery1 - 12</div><div class="line">INFO - 12345 - SQL - sqlQuery2 - 34</div><div class="line">INFO - 12345 - TASK_END - end</div></pre></td></tr></table></figure>
-<p>配置文件如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">   grok &#123;</div><div class="line">     match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:taskid&#125; - %&#123;NOTSPACE:logger&#125; - %&#123;WORD:label&#125;( - %&#123;INT:duration:int&#125;)?&quot; ]</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;TASK_START&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;map[&apos;sql_duration&apos;] = 0&quot;</div><div class="line">       map_action =&gt; &quot;create&quot;</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;SQL&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;map[&apos;sql_duration&apos;] += event.get(&apos;duration&apos;)&quot;</div><div class="line">       map_action =&gt; &quot;update&quot;</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;TASK_END&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;event.set(&apos;sql_duration&apos;, map[&apos;sql_duration&apos;])&quot;</div><div class="line">       map_action =&gt; &quot;update&quot;</div><div class="line">       end_of_task =&gt; true</div><div class="line">       timeout =&gt; 120</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>最后一个event输出如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">        &quot;host&quot; =&gt; &quot;host-10-0-251-156&quot;,</div><div class="line">      &quot;logger&quot; =&gt; &quot;TASK_END&quot;,</div><div class="line">      &quot;taskid&quot; =&gt; &quot;12345&quot;,</div><div class="line">       &quot;label&quot; =&gt; &quot;end&quot;,</div><div class="line">    &quot;loglevel&quot; =&gt; &quot;INFO&quot;,</div><div class="line">     &quot;message&quot; =&gt; &quot; INFO - 12345 - TASK_END - end&quot;,</div><div class="line">  &quot;@timestamp&quot; =&gt; 2018-12-14T01:00:04.414Z,</div><div class="line">        &quot;path&quot; =&gt; &quot;/root/logstash-6.5.0/config/test.txt&quot;,</div><div class="line">    &quot;@version&quot; =&gt; &quot;1&quot;,</div><div class="line">&quot;sql_duration&quot; =&gt; 46</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>sql_duration字段用于记录sql请求用时的总和。</p>
-<h3 id="2-例二：输入油结束标志没有开始标志"><a href="#2-例二：输入油结束标志没有开始标志" class="headerlink" title="2. 例二：输入油结束标志没有开始标志"></a>2. 例二：输入油结束标志没有开始标志</h3><p>输入日志如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - SQL - sqlQuery1 - 12</div><div class="line">INFO - 12345 - SQL - sqlQuery2 - 34</div><div class="line">INFO - 12345 - TASK_END - end</div></pre></td></tr></table></figure>
-<p>配置文件如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  grok &#123;</div><div class="line">    match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:taskid&#125; - %&#123;NOTSPACE:logger&#125; - %&#123;WORD:label&#125;( - %&#123;INT:duration:int&#125;)?&quot; ]</div><div class="line">  &#125;</div><div class="line">  if [logger] == &quot;SQL&quot; &#123;</div><div class="line">    aggregate &#123;</div><div class="line">      task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">      code =&gt; &quot;map[&apos;sql_duration&apos;] ||= 0 ; map[&apos;sql_duration&apos;] += event.get(&apos;duration&apos;)&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  if [logger] == &quot;TASK_END&quot; &#123;</div><div class="line">    aggregate &#123;</div><div class="line">      task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">      code =&gt; &quot;event.set(&apos;sql_duration&apos;, map[&apos;sql_duration&apos;])&quot;</div><div class="line">      end_of_task =&gt; true</div><div class="line">      timeout =&gt; 120</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>输出结果跟例一一样。</li>
-<li>“||= “是ruby的操作符，例子中当map[‘sql_duration’]没有舒适化值的时候，将被初始化为0。</li>
-</ul>
-<h3 id="3-例三：没有开始和结束标志"><a href="#3-例三：没有开始和结束标志" class="headerlink" title="3. 例三：没有开始和结束标志"></a>3. 例三：没有开始和结束标志</h3><p>典型的应用场景是跟踪用户行为。通过用户id跟踪用户行为事件，一旦用户停止了交互，这个事件也就相应结束了。然而却没有一个特定的标记来表示用户交互的结束。这种场景我们可以使用<em>push_map_as_event_on_timeout</em>参数，设置<em>timeout</em>，当超时发生时，将map作为一个新的事件被输出。另外我们可以设置<em>timecode</em>用于timeout事件结束时执行。</p>
-<p>输入日志如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - Clicked One</div><div class="line">INFO - 12345 - Clicked Two</div><div class="line">INFO - 12345 - Clicked Three</div></pre></td></tr></table></figure>
-<p>聚合用户的点击量：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  grok &#123;</div><div class="line">    match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:user_id&#125; - %&#123;GREEDYDATA:msg_text&#125;&quot; ]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  aggregate &#123;</div><div class="line">    task_id =&gt; &quot;%&#123;user_id&#125;&quot;</div><div class="line">    code =&gt; &quot;map[&apos;clicks&apos;] ||= 0; map[&apos;clicks&apos;] += 1;&quot;</div><div class="line">    push_map_as_event_on_timeout =&gt; true</div><div class="line">    timeout_task_id_field =&gt; &quot;user_id&quot;</div><div class="line">    timeout =&gt; 600 # 10 minutes timeout</div><div class="line">    timeout_tags =&gt; [&apos;_aggregatetimeout&apos;]</div><div class="line">    timeout_code =&gt; &quot;event.set(&apos;several_clicks&apos;, event.get(&apos;clicks&apos;) &gt; 1)&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>十分钟之后输出结果，最后事件的部分为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;several_clicks&quot; =&gt; true,</div><div class="line">          &quot;@version&quot; =&gt; &quot;1&quot;,</div><div class="line">        &quot;@timestamp&quot; =&gt; 2018-12-14T05:54:09.212Z,</div><div class="line">            &quot;clicks&quot; =&gt; 3,</div><div class="line">           &quot;user_id&quot; =&gt; &quot;12345&quot;,</div><div class="line">              &quot;tags&quot; =&gt; [</div><div class="line">        [0] &quot;_aggregatetimeout&quot;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="4-例四：没有开始和结束标志，任务连续不断"><a href="#4-例四：没有开始和结束标志，任务连续不断" class="headerlink" title="4. 例四：没有开始和结束标志，任务连续不断"></a>4. 例四：没有开始和结束标志，任务连续不断</h3><p>和例三一样，事件没有开始和结束的标志，并且任务连续不断。这就表明你不能靠设置timeout来更新map。</p>
-<p>典型的例子是通过jdbc的插件获取数据进行聚合。例如有这样的sql查询语句：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SELECT country_name, town_name FROM town</div></pre></td></tr></table></figure>
-<p>通过jdbc插件获得3个事件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;town_name&quot;: &quot;Paris&quot; &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;town_name&quot;: &quot;Marseille&quot; &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;USA&quot;, &quot;town_name&quot;: &quot;New-York&quot; &#125;</div></pre></td></tr></table></figure>
-<p>我们的目的是往es里存入两个数据：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;towns&quot;: [ &#123;&quot;town_name&quot;: &quot;Paris&quot;&#125;, &#123;&quot;town_name&quot;: &quot;Marseille&quot;&#125; ] &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;USA&quot;, &quot;towns&quot;: [ &#123;&quot;town_name&quot;: &quot;New-York&quot;&#125; ] &#125;</div></pre></td></tr></table></figure>
-<p>可以设置<em>push_previous_map_as_event</em>参数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;country_name&#125;&quot;</div><div class="line">       code =&gt; &quot;</div><div class="line">         map[&apos;country_name&apos;] = event.get(&apos;country_name&apos;)</div><div class="line">         map[&apos;towns&apos;] ||= []</div><div class="line">         map[&apos;towns&apos;] &lt;&lt; &#123;&apos;town_name&apos; =&gt; event.get(&apos;town_name&apos;)&#125;</div><div class="line">         event.cancel()</div><div class="line">       &quot;</div><div class="line">       push_previous_map_as_event =&gt; true</div><div class="line">       timeout =&gt; 5</div><div class="line">     &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>每当检测出一个新的country_name的时候，就会将当前的聚合map作为一个新的事件被推出，然后为下一个国家创建一个新的空map。</li>
-<li>当5秒超时之后，最后一个聚合map会被作为一个新的事件推出。</li>
-<li>event.cancel()会将起始的没有被聚合的事件丢弃。</li>
-</ul>
-<h3 id="5-例五：没有开始和结束标志并且尽可能快的推送事件"><a href="#5-例五：没有开始和结束标志并且尽可能快的推送事件" class="headerlink" title="5. 例五：没有开始和结束标志并且尽可能快的推送事件"></a>5. 例五：没有开始和结束标志并且尽可能快的推送事件</h3><p>这个例子也没有起始和结束标志，事件以不确定的间隔时间持续输入，并且希望用户最后交互后立即将事件推出而不用等超时时间，这要求聚合事件推送到输出的时间尽可能是实时的。典型的应场景是通过id跟踪用户行为的时候，一旦用户停止了交互，这个事件也就相应结束了。然而却没有一个特定的标记来表示用户交互的结束。如果对于同一个用户，如果没有事件输入时长达到了指定的<em>inactivity_timeout</em>时间，则认为交互结束。</p>
-<p>从第一个事件开始，如果同一个用户交互时间长于我们设置的<em>timeout</em>时间，聚合的map被推出的同时会被删除。</p>
-<p>和例三不同的是，当用户停止交互到达设定的<em>inactivity_timeout</em>时长，事件就会被推出而不是要等<em>timeout</em>的时间。</p>
-<p>输入日志文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - Clicked One</div><div class="line">INFO - 12345 - Clicked Two</div><div class="line">INFO - 12345 - Clicked Three</div></pre></td></tr></table></figure>
-<p>记录用户点击数量的logstash文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line"> grok &#123;</div><div class="line">   match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:user_id&#125; - %&#123;GREEDYDATA:msg_text&#125;&quot; ]</div><div class="line"> &#125;</div><div class="line"> aggregate &#123;</div><div class="line">   task_id =&gt; &quot;%&#123;user_id&#125;&quot;</div><div class="line">   code =&gt; &quot;map[&apos;clicks&apos;] ||= 0; map[&apos;clicks&apos;] += 1;&quot;</div><div class="line">   push_map_as_event_on_timeout =&gt; true</div><div class="line">   timeout_task_id_field =&gt; &quot;user_id&quot;</div><div class="line">   timeout =&gt; 3600 # 1 hour timeout, user activity will be considered finished one hour after the first event, even if events keep comming</div><div class="line">   inactivity_timeout =&gt; 300 # 5 minutes timeout, user activity will be considered finished if no new events arrive 5 minutes after the last event</div><div class="line">   timeout_tags =&gt; [&apos;_aggregatetimeout&apos;]</div><div class="line">   timeout_code =&gt; &quot;event.set(&apos;several_clicks&apos;, event.get(&apos;clicks&apos;) &gt; 1)&quot;</div><div class="line"> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当超过五分钟没有输入或者从第一个事件开始到达了一个小时（超时时间），都会提交事件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"> &quot;user_id&quot;: &quot;12345&quot;,</div><div class="line"> &quot;clicks&quot;: 3,</div><div class="line"> &quot;several_clicks&quot;: true,</div><div class="line">   &quot;tags&quot;: [</div><div class="line">      &quot;_aggregatetimeout&quot;</div><div class="line">   ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Tips：</p>
-<ul>
-<li><em>inactivity_timeout</em>，是从某个task_id的最后一个输入开始计时，直到超过设定的时间开始执行<em>timeout_code</em>的内容并输出。如果有多个task_id交叉输入，则将会分别计时。比如task_id=1输入一次，然后task_id=2输入两次，然后task_id=1再输入一次。task_id=2最后一次输入在task_id=1之前，则将先输出task_id=2通过<em>timeout_code</em>计算后的内容。</li>
-<li><em>timeout</em>上一条需要发生在同一个task_id第一次输入到最后一次输入的时间不超过<em>timeout</em>设置的时间的情况下，如果超过了<em>timeout</em>设置的时间，则会立即执行<em>timeout_code</em>的内容。例如<em>timeout</em>设置5分钟，而task_id=1持续输入（输入间隔不超过<em>inactivity_timeout</em>设置的时间）超过五分钟，则在五分钟的时候这个事件将会被推入输出里。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;aggregate可以将将属于一个task的多个events的信息聚合在一起，并最终聚合到最后一个events中。使用时要注意一定要将worker数量设置成1（在logstash安装目录下的config目录下，logstash.yml文件，默认的worker数量和cpu的内
-    
-    </summary>
-    
-    
-      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>logstash学习（四）—— 多管道</title>
-    <link href="http://yoursite.com/2019/04/10/logstash%E5%A4%9A%E7%AE%A1%E9%81%93/"/>
-    <id>http://yoursite.com/2019/04/10/logstash多管道/</id>
-    <published>2019-04-10T11:13:07.000Z</published>
-    <updated>2019-04-10T11:27:39.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="1-多管道配置"><a href="#1-多管道配置" class="headerlink" title="1. 多管道配置"></a>1. 多管道配置</h2><p>如果需要在同一个进程运行多个管道（pipeline），可以配置logstash的pipelines.yml文件，该文件在logstash/config目录下。配置文件的结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- pipeline.id: my-pipeline_1</div><div class="line">  path.config: &quot;/etc/path/to/p1.config&quot;</div><div class="line">  pipeline.workers: 3</div><div class="line">- pipeline.id: my-other-pipeline</div><div class="line">  path.config: &quot;/etc/different/path/p2.cfg&quot;</div><div class="line">  queue.type: persisted</div></pre></td></tr></table></figure>
-<p>配置文件需要遵循yaml格式列出一组路径，每个路径都描述了一个管道信息，并且需要以键值对的形式对管道进行描述。上述例子展现了两种通过ID和路径信息描述管道的方式。对于第一个管道，pipeline.workers的值被设置为3，而在另一个则启用持久队列特性。管道之间的资源竞争是很重要的，因为默认值是为单个管道调优的，考虑减少每个管道使用的管道工人的数量可以对单个管道调优，因为默认情况下每个管道每个CPU核心将使用1个工人。在pipelines.yml文件中未显式设置值的将使用默认值。</p>
-<h2 id="2-启动"><a href="#2-启动" class="headerlink" title="2. 启动"></a>2. 启动</h2><p>在logstash的bin目录下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># ./logstash</div></pre></td></tr></table></figure>
-<p>在没有参数的情况下启动logstash时，它将读取pipelines.yml文件并实例化文件中指定的所有管道，当使用-e或-f时，Logstash会忽略pipelines.yml文件，并记录对此的警告。</p>
-<h2 id="3-注意事项"><a href="#3-注意事项" class="headerlink" title="3. 注意事项"></a>3. 注意事项</h2><ul>
-<li>当输入使用相同插件的时候，比如都用了s3插件，需要考虑了设置临时存储文件的路径。因为s3插件在没有设置文件下载路径的情况下，默认把文件下载到了“/tmp/logstash”路径下，当有多个管道进行一起下载的时候，如果对命名没有区分，则可能造成处理文件出现异常。解决方法是指定各自管道的临时存储路径，s3的指定方法是设置temporary_directory参数，并在路径下创建指定的目录。</li>
-<li>当数据导入出现异常，需要删除数据重新启动的时候，需要先删除对导入数据进度的记录文件，具体做法是将logstash\data\下的文件都删掉。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;1-多管道配置&quot;&gt;&lt;a href=&quot;#1-多管道配置&quot; class=&quot;headerlink&quot; title=&quot;1. 多管道配置&quot;&gt;&lt;/a&gt;1. 多管道配置&lt;/h2&gt;&lt;p&gt;如果需要在同一个进程运行多个管道（pipeline），可以配置logstash的pipeline
-    
-    </summary>
-    
-    
-      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>logstash学习（一）—— 安装配置</title>
-    <link href="http://yoursite.com/2019/04/10/logstash%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"/>
-    <id>http://yoursite.com/2019/04/10/logstash安装配置/</id>
-    <published>2019-04-10T11:13:01.000Z</published>
-    <updated>2019-04-10T11:19:37.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>  Logstash是一个开源的服务器端数据处理管道，可以同时从多个源获取数据。面对海量的日志量，rsyslog和sed，awk等日志收集，处理工具已经显的力不从心。logstash是一个整合型的框架，可以用以日志的收集，存储，索引构建。</p>
-<h2 id="1-logstash安装"><a href="#1-logstash安装" class="headerlink" title="1. logstash安装"></a>1. logstash安装</h2><h3 id="1-1-安装环境"><a href="#1-1-安装环境" class="headerlink" title="1.1 安装环境"></a>1.1 安装环境</h3><ul>
-<li>centos 7.2</li>
-<li>JDK：1.8.0_112</li>
-</ul>
-<h3 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h3><p>直接下载压缩包，解压运行即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># wget https://artifacts.elastic.co/downloads/logstash/logstash-6.5.0.tar.gz</div><div class="line"># tar -zxvf logstash-6.5.0.tar.gz</div></pre></td></tr></table></figure>
-<h2 id="2-验证"><a href="#2-验证" class="headerlink" title="2. 验证"></a>2. 验证</h2><p>进入解压的logstash文件夹目录下的bin目录中，运行以命令行的形式运行logstash：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"># cd logstash-6.5.0/bin/</div><div class="line"># ./logstash -e &apos;input&#123; stdin&#123;&#125; &#125; output&#123; stdout&#123;&#125; &#125;&apos;</div><div class="line">Sending Logstash logs to /root/logstash-6.5.0/logs which is now configured via log4j2.properties</div><div class="line">[2018-11-19T14:30:25,975][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;&quot;path.queue&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/queue&quot;&#125;</div><div class="line">[2018-11-19T14:30:26,010][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;&quot;path.dead_letter_queue&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/dead_letter_queue&quot;&#125;</div><div class="line">[2018-11-19T14:30:27,642][WARN ][logstash.config.source.multilocal] Ignoring the &apos;pipelines.yml&apos; file because modules or command line options are specified</div><div class="line">[2018-11-19T14:30:27,848][INFO ][logstash.runner          ] Starting Logstash &#123;&quot;logstash.version&quot;=&gt;&quot;6.5.0&quot;&#125;</div><div class="line">[2018-11-19T14:30:28,051][INFO ][logstash.agent           ] No persistent UUID file found. Generating new UUID &#123;:uuid=&gt;&quot;7e16bcaa-b50e-4751-9fac-7acd00dc1773&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/uuid&quot;&#125;</div><div class="line">[2018-11-19T14:30:49,501][INFO ][logstash.pipeline        ] Starting pipeline &#123;:pipeline_id=&gt;&quot;main&quot;, &quot;pipeline.workers&quot;=&gt;4, &quot;pipeline.batch.size&quot;=&gt;125, &quot;pipeline.batch.delay&quot;=&gt;50&#125;</div><div class="line">[2018-11-19T14:30:50,690][INFO ][logstash.pipeline        ] Pipeline started successfully &#123;:pipeline_id=&gt;&quot;main&quot;, :thread=&gt;&quot;#&lt;Thread:0x2418c105 run&gt;&quot;&#125;</div><div class="line">The stdin plugin is now waiting for input:</div><div class="line">[2018-11-19T14:30:51,118][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</div><div class="line">[2018-11-19T14:30:52,429][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</div><div class="line">hello world</div><div class="line">&#123;</div><div class="line">      &quot;@version&quot; =&gt; &quot;1&quot;,  # 版本号</div><div class="line">       &quot;message&quot; =&gt; &quot;hello world&quot;, # 输入内容</div><div class="line">          &quot;host&quot; =&gt; &quot;xxxxxx&quot;,  # 主机名，数据是从哪个节点发过来的</div><div class="line">    &quot;@timestamp&quot; =&gt; 2018-11-19T06:31:03.697Z # 自动生成的时间戳</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;  Logstash是一个开源的服务器端数据处理管道，可以同时从多个源获取数据。面对海量的日志量，rsyslog和sed，awk等日志收集，处理工具已经显的力不从心。logstash是一个整合型的框架，可以用以日志的收集，存储，索引构建。&lt;/p&gt;
-&lt;h2 id=&quot;1-log
-    
-    </summary>
-    
-    
-      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>logstash学习（三）—— 自动重载配置文件</title>
-    <link href="http://yoursite.com/2019/04/10/logstash%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"/>
-    <id>http://yoursite.com/2019/04/10/logstash自动重载配置文件/</id>
-    <published>2019-04-10T11:12:55.000Z</published>
-    <updated>2019-04-10T11:21:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="1-自动重启配置"><a href="#1-自动重启配置" class="headerlink" title="1. 自动重启配置"></a>1. 自动重启配置</h2><p>从logstash2.3开始，当配置文件发生更改时，可以设置自动检测和重载配置文件而不用重启logstash。设置自动重载的命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># bin/logstash –f configFile.conf --config.reload.automatic</div></pre></td></tr></table></figure>
-<p>注意：</p>
-<ul>
-<li>当运行命令时（logstash指定-e运行）–config.reload.automatic参数不起作用。</li>
-<li>默认是每个3秒检测一次配置文件是否发生变化，当然检测间隔也可以自己设置，格式如下：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># bin/logstash –f configFile.conf --config.reload.automatic &lt;interval&gt;</div></pre></td></tr></table></figure>
-<p>如果已经运行了没有提供自动重启的logstash，可以发送一个挂起命令给logstash重新加载配置文件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill -1 &lt;pid&gt;</div></pre></td></tr></table></figure>
-<h2 id="2-工作原理"><a href="#2-工作原理" class="headerlink" title="2. 工作原理"></a>2. 工作原理</h2><p>当检测到配置文件变化则通过停止所有输入来停止当前pipeline。然后用新的配置尝试创建一个新的pipeline。如果检查配置文件语法正确并且所有的输入和输出可以初始化，则使用新的pipeline替换当前的pipeline。如果检查失败,使用旧的继续工作。注意在重载过程中,jvm没有重启。</p>
-<h2 id="3-注意事项"><a href="#3-注意事项" class="headerlink" title="3. 注意事项"></a>3. 注意事项</h2><ul>
-<li>stdin输入插件不支持自动重启。</li>
-<li>syslog作为输入源，当重载配置文件时会崩溃。</li>
-</ul>
-<p>具体见官网：<a href="https://www.elastic.co/guide/en/logstash/current/reloading-config.html" target="_blank" rel="external">Reloading the Config File</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;1-自动重启配置&quot;&gt;&lt;a href=&quot;#1-自动重启配置&quot; class=&quot;headerlink&quot; title=&quot;1. 自动重启配置&quot;&gt;&lt;/a&gt;1. 自动重启配置&lt;/h2&gt;&lt;p&gt;从logstash2.3开始，当配置文件发生更改时，可以设置自动检测和重载配置文件而不用
-    
-    </summary>
-    
-    
-      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
-    
-  </entry>
-  
-  <entry>
     <title>DSL检索语言</title>
     <link href="http://yoursite.com/2019/04/10/DSL%E6%A3%80%E7%B4%A2%E8%AF%AD%E8%A8%80/"/>
     <id>http://yoursite.com/2019/04/10/DSL检索语言/</id>
-    <published>2019-04-10T11:12:44.000Z</published>
-    <updated>2019-04-10T11:23:54.000Z</updated>
+    <published>2019-04-10T11:16:44.000Z</published>
+    <updated>2019-04-10T11:33:40.000Z</updated>
     
     <content type="html"><![CDATA[<p>ES中的聚合被分为两大类：Metric度量和bucket桶。metric很像SQL中的avg、max、min等方法，而bucket就有点类似group by。</p>
 <h2 id="1-单值聚合"><a href="#1-单值聚合" class="headerlink" title="1. 单值聚合"></a>1. 单值聚合</h2><ul>
@@ -385,6 +145,248 @@
       <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
     
       <category term="DSL" scheme="http://yoursite.com/tags/DSL/"/>
+    
+      <category term="kibana" scheme="http://yoursite.com/tags/kibana/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>logstash学习（五）—— aggregate插件使用</title>
+    <link href="http://yoursite.com/2019/04/10/logstash-aggregate%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2019/04/10/logstash-aggregate插件使用/</id>
+    <published>2019-04-10T11:15:23.000Z</published>
+    <updated>2019-04-10T11:33:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>aggregate可以将将属于一个task的多个events的信息聚合在一起，并最终聚合到最后一个events中。使用时要注意一定要将worker数量设置成1（在logstash安装目录下的config目录下，logstash.yml文件，默认的worker数量和cpu的内核数量一致），否则处理顺序错乱会导致未知的结果。</p>
+<h3 id="1-例一：输入有开始和结束标志的"><a href="#1-例一：输入有开始和结束标志的" class="headerlink" title="1. 例一：输入有开始和结束标志的"></a>1. 例一：输入有开始和结束标志的</h3><p>输入日志如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - TASK_START - start</div><div class="line">INFO - 12345 - SQL - sqlQuery1 - 12</div><div class="line">INFO - 12345 - SQL - sqlQuery2 - 34</div><div class="line">INFO - 12345 - TASK_END - end</div></pre></td></tr></table></figure>
+<p>配置文件如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">   grok &#123;</div><div class="line">     match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:taskid&#125; - %&#123;NOTSPACE:logger&#125; - %&#123;WORD:label&#125;( - %&#123;INT:duration:int&#125;)?&quot; ]</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;TASK_START&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;map[&apos;sql_duration&apos;] = 0&quot;</div><div class="line">       map_action =&gt; &quot;create&quot;</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;SQL&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;map[&apos;sql_duration&apos;] += event.get(&apos;duration&apos;)&quot;</div><div class="line">       map_action =&gt; &quot;update&quot;</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   if [logger] == &quot;TASK_END&quot; &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">       code =&gt; &quot;event.set(&apos;sql_duration&apos;, map[&apos;sql_duration&apos;])&quot;</div><div class="line">       map_action =&gt; &quot;update&quot;</div><div class="line">       end_of_task =&gt; true</div><div class="line">       timeout =&gt; 120</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>最后一个event输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">        &quot;host&quot; =&gt; &quot;host-10-0-251-156&quot;,</div><div class="line">      &quot;logger&quot; =&gt; &quot;TASK_END&quot;,</div><div class="line">      &quot;taskid&quot; =&gt; &quot;12345&quot;,</div><div class="line">       &quot;label&quot; =&gt; &quot;end&quot;,</div><div class="line">    &quot;loglevel&quot; =&gt; &quot;INFO&quot;,</div><div class="line">     &quot;message&quot; =&gt; &quot; INFO - 12345 - TASK_END - end&quot;,</div><div class="line">  &quot;@timestamp&quot; =&gt; 2018-12-14T01:00:04.414Z,</div><div class="line">        &quot;path&quot; =&gt; &quot;/root/logstash-6.5.0/config/test.txt&quot;,</div><div class="line">    &quot;@version&quot; =&gt; &quot;1&quot;,</div><div class="line">&quot;sql_duration&quot; =&gt; 46</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>sql_duration字段用于记录sql请求用时的总和。</p>
+<h3 id="2-例二：输入油结束标志没有开始标志"><a href="#2-例二：输入油结束标志没有开始标志" class="headerlink" title="2. 例二：输入油结束标志没有开始标志"></a>2. 例二：输入油结束标志没有开始标志</h3><p>输入日志如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - SQL - sqlQuery1 - 12</div><div class="line">INFO - 12345 - SQL - sqlQuery2 - 34</div><div class="line">INFO - 12345 - TASK_END - end</div></pre></td></tr></table></figure>
+<p>配置文件如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  grok &#123;</div><div class="line">    match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:taskid&#125; - %&#123;NOTSPACE:logger&#125; - %&#123;WORD:label&#125;( - %&#123;INT:duration:int&#125;)?&quot; ]</div><div class="line">  &#125;</div><div class="line">  if [logger] == &quot;SQL&quot; &#123;</div><div class="line">    aggregate &#123;</div><div class="line">      task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">      code =&gt; &quot;map[&apos;sql_duration&apos;] ||= 0 ; map[&apos;sql_duration&apos;] += event.get(&apos;duration&apos;)&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  if [logger] == &quot;TASK_END&quot; &#123;</div><div class="line">    aggregate &#123;</div><div class="line">      task_id =&gt; &quot;%&#123;taskid&#125;&quot;</div><div class="line">      code =&gt; &quot;event.set(&apos;sql_duration&apos;, map[&apos;sql_duration&apos;])&quot;</div><div class="line">      end_of_task =&gt; true</div><div class="line">      timeout =&gt; 120</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>输出结果跟例一一样。</li>
+<li>“||= “是ruby的操作符，例子中当map[‘sql_duration’]没有舒适化值的时候，将被初始化为0。</li>
+</ul>
+<h3 id="3-例三：没有开始和结束标志"><a href="#3-例三：没有开始和结束标志" class="headerlink" title="3. 例三：没有开始和结束标志"></a>3. 例三：没有开始和结束标志</h3><p>典型的应用场景是跟踪用户行为。通过用户id跟踪用户行为事件，一旦用户停止了交互，这个事件也就相应结束了。然而却没有一个特定的标记来表示用户交互的结束。这种场景我们可以使用<em>push_map_as_event_on_timeout</em>参数，设置<em>timeout</em>，当超时发生时，将map作为一个新的事件被输出。另外我们可以设置<em>timecode</em>用于timeout事件结束时执行。</p>
+<p>输入日志如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - Clicked One</div><div class="line">INFO - 12345 - Clicked Two</div><div class="line">INFO - 12345 - Clicked Three</div></pre></td></tr></table></figure>
+<p>聚合用户的点击量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  grok &#123;</div><div class="line">    match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:user_id&#125; - %&#123;GREEDYDATA:msg_text&#125;&quot; ]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  aggregate &#123;</div><div class="line">    task_id =&gt; &quot;%&#123;user_id&#125;&quot;</div><div class="line">    code =&gt; &quot;map[&apos;clicks&apos;] ||= 0; map[&apos;clicks&apos;] += 1;&quot;</div><div class="line">    push_map_as_event_on_timeout =&gt; true</div><div class="line">    timeout_task_id_field =&gt; &quot;user_id&quot;</div><div class="line">    timeout =&gt; 600 # 10 minutes timeout</div><div class="line">    timeout_tags =&gt; [&apos;_aggregatetimeout&apos;]</div><div class="line">    timeout_code =&gt; &quot;event.set(&apos;several_clicks&apos;, event.get(&apos;clicks&apos;) &gt; 1)&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>十分钟之后输出结果，最后事件的部分为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;several_clicks&quot; =&gt; true,</div><div class="line">          &quot;@version&quot; =&gt; &quot;1&quot;,</div><div class="line">        &quot;@timestamp&quot; =&gt; 2018-12-14T05:54:09.212Z,</div><div class="line">            &quot;clicks&quot; =&gt; 3,</div><div class="line">           &quot;user_id&quot; =&gt; &quot;12345&quot;,</div><div class="line">              &quot;tags&quot; =&gt; [</div><div class="line">        [0] &quot;_aggregatetimeout&quot;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-例四：没有开始和结束标志，任务连续不断"><a href="#4-例四：没有开始和结束标志，任务连续不断" class="headerlink" title="4. 例四：没有开始和结束标志，任务连续不断"></a>4. 例四：没有开始和结束标志，任务连续不断</h3><p>和例三一样，事件没有开始和结束的标志，并且任务连续不断。这就表明你不能靠设置timeout来更新map。</p>
+<p>典型的例子是通过jdbc的插件获取数据进行聚合。例如有这样的sql查询语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SELECT country_name, town_name FROM town</div></pre></td></tr></table></figure>
+<p>通过jdbc插件获得3个事件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;town_name&quot;: &quot;Paris&quot; &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;town_name&quot;: &quot;Marseille&quot; &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;USA&quot;, &quot;town_name&quot;: &quot;New-York&quot; &#125;</div></pre></td></tr></table></figure>
+<p>我们的目的是往es里存入两个数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;country_name&quot;: &quot;France&quot;, &quot;towns&quot;: [ &#123;&quot;town_name&quot;: &quot;Paris&quot;&#125;, &#123;&quot;town_name&quot;: &quot;Marseille&quot;&#125; ] &#125;</div><div class="line">&#123; &quot;country_name&quot;: &quot;USA&quot;, &quot;towns&quot;: [ &#123;&quot;town_name&quot;: &quot;New-York&quot;&#125; ] &#125;</div></pre></td></tr></table></figure>
+<p>可以设置<em>push_previous_map_as_event</em>参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line">     aggregate &#123;</div><div class="line">       task_id =&gt; &quot;%&#123;country_name&#125;&quot;</div><div class="line">       code =&gt; &quot;</div><div class="line">         map[&apos;country_name&apos;] = event.get(&apos;country_name&apos;)</div><div class="line">         map[&apos;towns&apos;] ||= []</div><div class="line">         map[&apos;towns&apos;] &lt;&lt; &#123;&apos;town_name&apos; =&gt; event.get(&apos;town_name&apos;)&#125;</div><div class="line">         event.cancel()</div><div class="line">       &quot;</div><div class="line">       push_previous_map_as_event =&gt; true</div><div class="line">       timeout =&gt; 5</div><div class="line">     &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>每当检测出一个新的country_name的时候，就会将当前的聚合map作为一个新的事件被推出，然后为下一个国家创建一个新的空map。</li>
+<li>当5秒超时之后，最后一个聚合map会被作为一个新的事件推出。</li>
+<li>event.cancel()会将起始的没有被聚合的事件丢弃。</li>
+</ul>
+<h3 id="5-例五：没有开始和结束标志并且尽可能快的推送事件"><a href="#5-例五：没有开始和结束标志并且尽可能快的推送事件" class="headerlink" title="5. 例五：没有开始和结束标志并且尽可能快的推送事件"></a>5. 例五：没有开始和结束标志并且尽可能快的推送事件</h3><p>这个例子也没有起始和结束标志，事件以不确定的间隔时间持续输入，并且希望用户最后交互后立即将事件推出而不用等超时时间，这要求聚合事件推送到输出的时间尽可能是实时的。典型的应场景是通过id跟踪用户行为的时候，一旦用户停止了交互，这个事件也就相应结束了。然而却没有一个特定的标记来表示用户交互的结束。如果对于同一个用户，如果没有事件输入时长达到了指定的<em>inactivity_timeout</em>时间，则认为交互结束。</p>
+<p>从第一个事件开始，如果同一个用户交互时间长于我们设置的<em>timeout</em>时间，聚合的map被推出的同时会被删除。</p>
+<p>和例三不同的是，当用户停止交互到达设定的<em>inactivity_timeout</em>时长，事件就会被推出而不是要等<em>timeout</em>的时间。</p>
+<p>输入日志文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">INFO - 12345 - Clicked One</div><div class="line">INFO - 12345 - Clicked Two</div><div class="line">INFO - 12345 - Clicked Three</div></pre></td></tr></table></figure>
+<p>记录用户点击数量的logstash文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">filter &#123;</div><div class="line"> grok &#123;</div><div class="line">   match =&gt; [ &quot;message&quot;, &quot;%&#123;LOGLEVEL:loglevel&#125; - %&#123;NOTSPACE:user_id&#125; - %&#123;GREEDYDATA:msg_text&#125;&quot; ]</div><div class="line"> &#125;</div><div class="line"> aggregate &#123;</div><div class="line">   task_id =&gt; &quot;%&#123;user_id&#125;&quot;</div><div class="line">   code =&gt; &quot;map[&apos;clicks&apos;] ||= 0; map[&apos;clicks&apos;] += 1;&quot;</div><div class="line">   push_map_as_event_on_timeout =&gt; true</div><div class="line">   timeout_task_id_field =&gt; &quot;user_id&quot;</div><div class="line">   timeout =&gt; 3600 # 1 hour timeout, user activity will be considered finished one hour after the first event, even if events keep comming</div><div class="line">   inactivity_timeout =&gt; 300 # 5 minutes timeout, user activity will be considered finished if no new events arrive 5 minutes after the last event</div><div class="line">   timeout_tags =&gt; [&apos;_aggregatetimeout&apos;]</div><div class="line">   timeout_code =&gt; &quot;event.set(&apos;several_clicks&apos;, event.get(&apos;clicks&apos;) &gt; 1)&quot;</div><div class="line"> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当超过五分钟没有输入或者从第一个事件开始到达了一个小时（超时时间），都会提交事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"> &quot;user_id&quot;: &quot;12345&quot;,</div><div class="line"> &quot;clicks&quot;: 3,</div><div class="line"> &quot;several_clicks&quot;: true,</div><div class="line">   &quot;tags&quot;: [</div><div class="line">      &quot;_aggregatetimeout&quot;</div><div class="line">   ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Tips：</p>
+<ul>
+<li><em>inactivity_timeout</em>，是从某个task_id的最后一个输入开始计时，直到超过设定的时间开始执行<em>timeout_code</em>的内容并输出。如果有多个task_id交叉输入，则将会分别计时。比如task_id=1输入一次，然后task_id=2输入两次，然后task_id=1再输入一次。task_id=2最后一次输入在task_id=1之前，则将先输出task_id=2通过<em>timeout_code</em>计算后的内容。</li>
+<li><em>timeout</em>上一条需要发生在同一个task_id第一次输入到最后一次输入的时间不超过<em>timeout</em>设置的时间的情况下，如果超过了<em>timeout</em>设置的时间，则会立即执行<em>timeout_code</em>的内容。例如<em>timeout</em>设置5分钟，而task_id=1持续输入（输入间隔不超过<em>inactivity_timeout</em>设置的时间）超过五分钟，则在五分钟的时候这个事件将会被推入输出里。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;aggregate可以将将属于一个task的多个events的信息聚合在一起，并最终聚合到最后一个events中。使用时要注意一定要将worker数量设置成1（在logstash安装目录下的config目录下，logstash.yml文件，默认的worker数量和cpu的内
+    
+    </summary>
+    
+    
+      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>logstash学习（四）—— 多管道</title>
+    <link href="http://yoursite.com/2019/04/10/logstash%E5%A4%9A%E7%AE%A1%E9%81%93/"/>
+    <id>http://yoursite.com/2019/04/10/logstash多管道/</id>
+    <published>2019-04-10T11:14:07.000Z</published>
+    <updated>2019-04-10T11:33:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-多管道配置"><a href="#1-多管道配置" class="headerlink" title="1. 多管道配置"></a>1. 多管道配置</h2><p>如果需要在同一个进程运行多个管道（pipeline），可以配置logstash的pipelines.yml文件，该文件在logstash/config目录下。配置文件的结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- pipeline.id: my-pipeline_1</div><div class="line">  path.config: &quot;/etc/path/to/p1.config&quot;</div><div class="line">  pipeline.workers: 3</div><div class="line">- pipeline.id: my-other-pipeline</div><div class="line">  path.config: &quot;/etc/different/path/p2.cfg&quot;</div><div class="line">  queue.type: persisted</div></pre></td></tr></table></figure>
+<p>配置文件需要遵循yaml格式列出一组路径，每个路径都描述了一个管道信息，并且需要以键值对的形式对管道进行描述。上述例子展现了两种通过ID和路径信息描述管道的方式。对于第一个管道，pipeline.workers的值被设置为3，而在另一个则启用持久队列特性。管道之间的资源竞争是很重要的，因为默认值是为单个管道调优的，考虑减少每个管道使用的管道工人的数量可以对单个管道调优，因为默认情况下每个管道每个CPU核心将使用1个工人。在pipelines.yml文件中未显式设置值的将使用默认值。</p>
+<h2 id="2-启动"><a href="#2-启动" class="headerlink" title="2. 启动"></a>2. 启动</h2><p>在logstash的bin目录下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># ./logstash</div></pre></td></tr></table></figure>
+<p>在没有参数的情况下启动logstash时，它将读取pipelines.yml文件并实例化文件中指定的所有管道，当使用-e或-f时，Logstash会忽略pipelines.yml文件，并记录对此的警告。</p>
+<h2 id="3-注意事项"><a href="#3-注意事项" class="headerlink" title="3. 注意事项"></a>3. 注意事项</h2><ul>
+<li>当输入使用相同插件的时候，比如都用了s3插件，需要考虑了设置临时存储文件的路径。因为s3插件在没有设置文件下载路径的情况下，默认把文件下载到了“/tmp/logstash”路径下，当有多个管道进行一起下载的时候，如果对命名没有区分，则可能造成处理文件出现异常。解决方法是指定各自管道的临时存储路径，s3的指定方法是设置temporary_directory参数，并在路径下创建指定的目录。</li>
+<li>当数据导入出现异常，需要删除数据重新启动的时候，需要先删除对导入数据进度的记录文件，具体做法是将logstash\data\下的文件都删掉。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-多管道配置&quot;&gt;&lt;a href=&quot;#1-多管道配置&quot; class=&quot;headerlink&quot; title=&quot;1. 多管道配置&quot;&gt;&lt;/a&gt;1. 多管道配置&lt;/h2&gt;&lt;p&gt;如果需要在同一个进程运行多个管道（pipeline），可以配置logstash的pipeline
+    
+    </summary>
+    
+    
+      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>logstash学习（三）—— 自动重载配置文件</title>
+    <link href="http://yoursite.com/2019/04/10/logstash%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"/>
+    <id>http://yoursite.com/2019/04/10/logstash自动重载配置文件/</id>
+    <published>2019-04-10T11:12:55.000Z</published>
+    <updated>2019-04-10T11:21:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-自动重启配置"><a href="#1-自动重启配置" class="headerlink" title="1. 自动重启配置"></a>1. 自动重启配置</h2><p>从logstash2.3开始，当配置文件发生更改时，可以设置自动检测和重载配置文件而不用重启logstash。设置自动重载的命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># bin/logstash –f configFile.conf --config.reload.automatic</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>当运行命令时（logstash指定-e运行）–config.reload.automatic参数不起作用。</li>
+<li>默认是每个3秒检测一次配置文件是否发生变化，当然检测间隔也可以自己设置，格式如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"># bin/logstash –f configFile.conf --config.reload.automatic &lt;interval&gt;</div></pre></td></tr></table></figure>
+<p>如果已经运行了没有提供自动重启的logstash，可以发送一个挂起命令给logstash重新加载配置文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill -1 &lt;pid&gt;</div></pre></td></tr></table></figure>
+<h2 id="2-工作原理"><a href="#2-工作原理" class="headerlink" title="2. 工作原理"></a>2. 工作原理</h2><p>当检测到配置文件变化则通过停止所有输入来停止当前pipeline。然后用新的配置尝试创建一个新的pipeline。如果检查配置文件语法正确并且所有的输入和输出可以初始化，则使用新的pipeline替换当前的pipeline。如果检查失败,使用旧的继续工作。注意在重载过程中,jvm没有重启。</p>
+<h2 id="3-注意事项"><a href="#3-注意事项" class="headerlink" title="3. 注意事项"></a>3. 注意事项</h2><ul>
+<li>stdin输入插件不支持自动重启。</li>
+<li>syslog作为输入源，当重载配置文件时会崩溃。</li>
+</ul>
+<p>具体见官网：<a href="https://www.elastic.co/guide/en/logstash/current/reloading-config.html" target="_blank" rel="external">Reloading the Config File</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;1-自动重启配置&quot;&gt;&lt;a href=&quot;#1-自动重启配置&quot; class=&quot;headerlink&quot; title=&quot;1. 自动重启配置&quot;&gt;&lt;/a&gt;1. 自动重启配置&lt;/h2&gt;&lt;p&gt;从logstash2.3开始，当配置文件发生更改时，可以设置自动检测和重载配置文件而不用
+    
+    </summary>
+    
+    
+      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>logstash学习（二）—— 配置文件运行</title>
+    <link href="http://yoursite.com/2019/04/10/logstash%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8C/"/>
+    <id>http://yoursite.com/2019/04/10/logstash配置文件运行/</id>
+    <published>2019-04-10T11:12:29.000Z</published>
+    <updated>2019-04-10T11:32:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在实际生产环境中，logstash常常需要用到复杂的运行规则，使用命令行显然不可取。所以可以自定义规则文件，然后让Logstash根据规则进行工作。</p>
+<h2 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1. 配置文件"></a>1. 配置文件</h2><p>配置文件结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">input&#123;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">filter&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">output&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置文件主要有input，output和filter三个大的部分构成。input是数据的输入源，可以是来自文件，网站，redis，s3等。output是数据的输出，可以输出到文件，elasticsearch，邮件，kafka等。filter是过滤规则，根据需要进行内容的过滤。</p>
+<p>将配置文件放在logstash下的config目录中。进入logstash的bin目录，运行配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># cd logstash-6.3.2/bin/</div><div class="line"># ./logstash -f /root/logstash-6.5.0/config/test.conf</div></pre></td></tr></table></figure>
+<h2 id="2-常用插件"><a href="#2-常用插件" class="headerlink" title="2. 常用插件"></a>2. 常用插件</h2><p>例，如下的配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">cat UGA-MTN.conf </div><div class="line">input &#123;</div><div class="line">  s3&#123;</div><div class="line">    access_key_id =&gt; &quot;ACCESS_KEY_ID&quot;</div><div class="line">    secret_access_key =&gt; &quot;SECRET_ACCESS_KEY&quot;</div><div class="line">    bucket =&gt; &quot;your_bucket&quot;</div><div class="line">    region =&gt; &quot;your_s3_region&quot;</div><div class="line">    interval =&gt; 600</div><div class="line">    prefix =&gt; &quot;……&quot; </div><div class="line">    exclude_pattern =&gt; &quot;……&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">filter &#123;</div><div class="line">  urldecode&#123;</div><div class="line">    all_fields =&gt; true</div><div class="line">  &#125;</div><div class="line">  grok&#123;</div><div class="line">    match =&gt; &#123;&quot;message&quot; =&gt; &quot;%&#123;TIMESTAMP_ISO8601:log_date&#125;\s%&#123;NOTSPACE:log_name&#125;\s(?:%&#123;NOTSPACE:request_body&#125;)&quot;&#125;</div><div class="line">    remove_field =&gt; [&quot;log_name&quot;]</div><div class="line">  &#125;</div><div class="line">  json &#123;</div><div class="line">    source =&gt; &quot;request_body&quot;</div><div class="line">    remove_field =&gt; [&quot;request_body&quot;]</div><div class="line">  &#125;</div><div class="line">  mutate&#123;</div><div class="line">    add_field =&gt; &#123;</div><div class="line">      &quot;rack&quot; =&gt; &quot;……&quot;</div><div class="line">    &#125;</div><div class="line">    convert =&gt; &#123;</div><div class="line">      &quot;request_time&quot; =&gt; &quot;integer&quot;</div><div class="line">      &quot;status&quot; =&gt; &quot;integer&quot;</div><div class="line">      &quot;bytes_sent&quot; =&gt; &quot;integer&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">output &#123;</div><div class="line">  elasticsearch &#123;</div><div class="line">    action =&gt; &quot;index&quot;                                       #The operation on ES</div><div class="line">    hosts =&gt; [&quot;192.168.32.20:9200&quot;]   #ElasticSearch host, can be array.</div><div class="line">    index =&gt; &quot;cache_log_%&#123;+YYYY.MM.dd&#125;&quot;                     #The index to write data to.</div><div class="line">    document_type =&gt; &quot;logs&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-1-输入插件s3"><a href="#2-1-输入插件s3" class="headerlink" title="2.1 输入插件s3"></a>2.1 输入插件s3</h3><p>s3插件可以从s3上获取数据。常用参数有：</p>
+<ul>
+<li>access_key_id: String类型，没有默认值。用于获取s3的验证。</li>
+<li>aws_credentials_file：String类型，没有默认值。用于获取s3的验证。当access_key_id和secret_access_key没有设置的时候，才会加载这个文件。</li>
+<li>secret_access_key：String类型，默认值是“logstash”，根据实际情况进行修改。</li>
+</ul>
+<p>注：常用的获取s3验证的方法有：</p>
+<ol>
+<li>access_key_id和ecret_access_key进行配置；</li>
+<li>配置aws_credentials_file从外部文件进行获取；</li>
+<li>将AWS_ACCESS_KEY_ID和AWS_SECRET_ACCESS_KEY配置到环境变量中。</li>
+<li>将AMAZON_ACCESS_KEY_ID和AMAZON_SECRET_ACCESS_KEY配置到环境变量中。</li>
+<li>IAM实例的证书。</li>
+</ol>
+<ul>
+<li>bucket，String类型必选参数且没有默认值。需要获取数据的s3的桶的名称。</li>
+<li>region，String类型，默认值是“us-east-1”，表示AWS所在的位置区域。</li>
+<li>interval，number类型，默认值是60，单位是秒。两次获取数据的间隔时间。</li>
+<li>prefix，String类型，默认值是nil。表示表示在桶里面需要匹配的文件前缀，不是一个正则表达式。</li>
+<li>exclude_pattern，String类型，默认值是nil。正则匹配需要从桶里面排除的文件。</li>
+<li>temporary_directory，String类型，默认值是“/tmp/logstash”，用于临时保存从s3下载的文件，可以根据需求进行修改路径。</li>
+</ul>
+<p>其他参数详见官方文档：<a href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-s3.html" target="_blank" rel="external">s3插件说明</a></p>
+<h3 id="2-2-输出插件elasticsearch"><a href="#2-2-输出插件elasticsearch" class="headerlink" title="2.2 输出插件elasticsearch"></a>2.2 输出插件elasticsearch</h3><p>elasticsearch只支持HTTP协议，logstash和elasticsearch的交互也优先使用HTTP协议。HTTP协议尽管稍微慢一点，但是很好控制和使用。</p>
+<ul>
+<li>action，，String类型，默认值是index。表示elasticsearch要进行的操作。有效操作有: index：为文件编索引；delete：根据id删除文件；create：为文件指定创建的索引，如果索引已经存在，则创建失败；update：根据id更新文件信息。</li>
+<li>hosts，类型是Uri，默认值是[//127.0.0.1]。设置远程实例的主机，可以在数组里放多个ip设置多台主机。</li>
+<li>index，String类型，默认值是logstash-%{+YYYY.MM.dd}。用于设置数据写入的index名称。</li>
+</ul>
+<p>其他参数详见官方文档：<a href="https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html" target="_blank" rel="external">elasticsearch插件说明</a></p>
+<h3 id="2-3-filter插件"><a href="#2-3-filter插件" class="headerlink" title="2.3 filter插件"></a>2.3 filter插件</h3><ul>
+<li>urldecode：Nginx作为反向代理服务器，部分日志在传输的过程中是通过“urlencoded”编码的，通过logstash收集上来的日志需要用urldecode将字符串还原为原来的格式。</li>
+</ul>
+<p>Urldecode常用的配置选项：</p>
+<ol>
+<li><p>all_fields：对所有的值进行url的解码，默认值为false</p>
+</li>
+<li><p>Charset：设置解码使用的字符集，默认为“utf-8”。</p>
+</li>
+</ol>
+<ul>
+<li>grok是通过系统预定义的正则表达式或者通过自己定义正则表达式来匹配日志中的各个值，在使用时自己可以根据自己的日志格式或者对匹配正则进行调整或者直接调用。如果，自己想在其他目录定义正则规则匹配日志，在使用时需要指定正则的路径。</li>
+<li>mutate主要用来修改、替换、删除及重命名字段中的某些插件。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在实际生产环境中，logstash常常需要用到复杂的运行规则，使用命令行显然不可取。所以可以自定义规则文件，然后让Logstash根据规则进行工作。&lt;/p&gt;
+&lt;h2 id=&quot;1-配置文件&quot;&gt;&lt;a href=&quot;#1-配置文件&quot; class=&quot;headerlink&quot; title
+    
+    </summary>
+    
+    
+      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>logstash学习（一）—— 安装配置</title>
+    <link href="http://yoursite.com/2019/04/10/logstash%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yoursite.com/2019/04/10/logstash安装配置/</id>
+    <published>2019-04-10T11:11:01.000Z</published>
+    <updated>2019-04-10T11:32:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>  Logstash是一个开源的服务器端数据处理管道，可以同时从多个源获取数据。面对海量的日志量，rsyslog和sed，awk等日志收集，处理工具已经显的力不从心。logstash是一个整合型的框架，可以用以日志的收集，存储，索引构建。</p>
+<h2 id="1-logstash安装"><a href="#1-logstash安装" class="headerlink" title="1. logstash安装"></a>1. logstash安装</h2><h3 id="1-1-安装环境"><a href="#1-1-安装环境" class="headerlink" title="1.1 安装环境"></a>1.1 安装环境</h3><ul>
+<li>centos 7.2</li>
+<li>JDK：1.8.0_112</li>
+</ul>
+<h3 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h3><p>直接下载压缩包，解压运行即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># wget https://artifacts.elastic.co/downloads/logstash/logstash-6.5.0.tar.gz</div><div class="line"># tar -zxvf logstash-6.5.0.tar.gz</div></pre></td></tr></table></figure>
+<h2 id="2-验证"><a href="#2-验证" class="headerlink" title="2. 验证"></a>2. 验证</h2><p>进入解压的logstash文件夹目录下的bin目录中，运行以命令行的形式运行logstash：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"># cd logstash-6.5.0/bin/</div><div class="line"># ./logstash -e &apos;input&#123; stdin&#123;&#125; &#125; output&#123; stdout&#123;&#125; &#125;&apos;</div><div class="line">Sending Logstash logs to /root/logstash-6.5.0/logs which is now configured via log4j2.properties</div><div class="line">[2018-11-19T14:30:25,975][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;&quot;path.queue&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/queue&quot;&#125;</div><div class="line">[2018-11-19T14:30:26,010][INFO ][logstash.setting.writabledirectory] Creating directory &#123;:setting=&gt;&quot;path.dead_letter_queue&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/dead_letter_queue&quot;&#125;</div><div class="line">[2018-11-19T14:30:27,642][WARN ][logstash.config.source.multilocal] Ignoring the &apos;pipelines.yml&apos; file because modules or command line options are specified</div><div class="line">[2018-11-19T14:30:27,848][INFO ][logstash.runner          ] Starting Logstash &#123;&quot;logstash.version&quot;=&gt;&quot;6.5.0&quot;&#125;</div><div class="line">[2018-11-19T14:30:28,051][INFO ][logstash.agent           ] No persistent UUID file found. Generating new UUID &#123;:uuid=&gt;&quot;7e16bcaa-b50e-4751-9fac-7acd00dc1773&quot;, :path=&gt;&quot;/root/logstash-6.5.0/data/uuid&quot;&#125;</div><div class="line">[2018-11-19T14:30:49,501][INFO ][logstash.pipeline        ] Starting pipeline &#123;:pipeline_id=&gt;&quot;main&quot;, &quot;pipeline.workers&quot;=&gt;4, &quot;pipeline.batch.size&quot;=&gt;125, &quot;pipeline.batch.delay&quot;=&gt;50&#125;</div><div class="line">[2018-11-19T14:30:50,690][INFO ][logstash.pipeline        ] Pipeline started successfully &#123;:pipeline_id=&gt;&quot;main&quot;, :thread=&gt;&quot;#&lt;Thread:0x2418c105 run&gt;&quot;&#125;</div><div class="line">The stdin plugin is now waiting for input:</div><div class="line">[2018-11-19T14:30:51,118][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</div><div class="line">[2018-11-19T14:30:52,429][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</div><div class="line">hello world</div><div class="line">&#123;</div><div class="line">      &quot;@version&quot; =&gt; &quot;1&quot;,  # 版本号</div><div class="line">       &quot;message&quot; =&gt; &quot;hello world&quot;, # 输入内容</div><div class="line">          &quot;host&quot; =&gt; &quot;xxxxxx&quot;,  # 主机名，数据是从哪个节点发过来的</div><div class="line">    &quot;@timestamp&quot; =&gt; 2018-11-19T06:31:03.697Z # 自动生成的时间戳</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;  Logstash是一个开源的服务器端数据处理管道，可以同时从多个源获取数据。面对海量的日志量，rsyslog和sed，awk等日志收集，处理工具已经显的力不从心。logstash是一个整合型的框架，可以用以日志的收集，存储，索引构建。&lt;/p&gt;
+&lt;h2 id=&quot;1-log
+    
+    </summary>
+    
+    
+      <category term="logstash" scheme="http://yoursite.com/tags/logstash/"/>
     
   </entry>
   
