@@ -292,7 +292,7 @@
     <link href="http://yoursite.com/2019/04/10/logstash%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8C/"/>
     <id>http://yoursite.com/2019/04/10/logstash配置文件运行/</id>
     <published>2019-04-10T11:12:29.000Z</published>
-    <updated>2019-04-10T11:32:54.000Z</updated>
+    <updated>2020-03-03T13:36:06.277Z</updated>
     
     <content type="html"><![CDATA[<p>在实际生产环境中，logstash常常需要用到复杂的运行规则，使用命令行显然不可取。所以可以自定义规则文件，然后让Logstash根据规则进行工作。</p>
 <h2 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1. 配置文件"></a>1. 配置文件</h2><p>配置文件结构如下：</p>
@@ -395,11 +395,11 @@
     <link href="http://yoursite.com/2018/08/28/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BC%80%E5%8F%91%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%E8%87%AA%E5%AE%9A%E4%B9%89%E8%8F%9C%E5%8D%95%E5%92%8C%E5%93%8D%E5%BA%94/"/>
     <id>http://yoursite.com/2018/08/28/微信公众号开发（三）——自定义菜单和响应/</id>
     <published>2018-08-28T14:15:36.000Z</published>
-    <updated>2019-04-10T08:54:44.000Z</updated>
+    <updated>2020-03-03T13:35:08.359Z</updated>
     
     <content type="html"><![CDATA[<h2 id="1-测试号申请"><a href="#1-测试号申请" class="headerlink" title="1. 测试号申请"></a>1. 测试号申请</h2><p>不同的公众号类型具备不同的接口权限，一般个人申请的是未认证订阅号，没有自定义菜单的功能，只有企业组织科申请工作好认证公众号。不同类型的公众号的不同接口权限详情见：<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1433401084" target="_blank" rel="external">公众号接口权限说明</a>。</p>
 <p>我们可以申请一个接口测试号，这个测试号几乎开放所有的接口，可以供测试使用， <a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421137522" target="_blank" rel="external">接口测试号申请</a>。测试号如下图，可以用测试号的appID和appsecret进行接口调用。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/21.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/21.png" alt="image"></p>
 <h2 id="2-创建自定义菜单"><a href="#2-创建自定义菜单" class="headerlink" title="2. 创建自定义菜单"></a>2. 创建自定义菜单</h2><h3 id="2-1-获取access-token"><a href="#2-1-获取access-token" class="headerlink" title="2.1 获取access_token"></a>2.1 获取access_token</h3><p>获取access_token的接口为GET：<br><a href="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID" target="_blank" rel="external">https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=APPID</a></p>
 <p>创建自定义菜单的接口为POST：<a href="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESSTOKEN" target="_blank" rel="external">https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESSTOKEN</a> 其中需要传的body详见官网文档： <a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141013" target="_blank" rel="external">自定义菜单创建接口</a>。</p>
 <p>可以用postman进行接口调用。这里主要讲通过java程序进行创建。</p>
@@ -413,7 +413,7 @@
 <p>运行方法，如果没有错误信息，则返回：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;errcode&quot;: 0,</div><div class="line">    &quot;errmsg&quot;: &quot;ok&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>打开测试公众号，可以看到我们新加的自定义菜单。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/22.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/22.png" alt="image"></p>
 <h2 id="菜单响应"><a href="#菜单响应" class="headerlink" title="菜单响应"></a>菜单响应</h2><p>这里的响应主要针对上传照片和click按钮，view按钮会自动跳转到初始化的url页面上。</p>
 <p>在web.xml中配一个servlet</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>weixin<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.star.ott.tokenmanage.api.business.CoreServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>weixin<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/wx<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></div></pre></td></tr></table></figure>
@@ -439,14 +439,14 @@
     <link href="http://yoursite.com/2018/08/28/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BC%80%E5%8F%91%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E6%9C%AC%E5%9C%B0%E8%B0%83%E8%AF%95/"/>
     <id>http://yoursite.com/2018/08/28/微信公众号开发（二）——本地调试/</id>
     <published>2018-08-28T14:15:18.000Z</published>
-    <updated>2019-04-10T08:52:32.000Z</updated>
+    <updated>2020-03-03T13:35:20.200Z</updated>
     
     <content type="html"><![CDATA[<p>微信用户发送信息到腾讯服务器，然后腾讯服务器把请求以post方式转发到自己的服务器上（需要有外网ip，并且token验证通过的服务器）。然后在自己的服务器上进行处理后把处理结果返回给腾讯服务器，腾讯服务器再把数据返回给用户，整个过程如下图。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/20.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/20.png" alt="image"></p>
 <p>因为腾讯服务器转发到自己的服务器要求该服务器有外网地址，而我们调试程序的服务器通常可能没有外网地址。因此需要在有外网地址的服务器上做流量转发，转发到本地进行调试。</p>
 <p>可以用xshell或其他软件做内网穿透，具体见：<a href="https://my.oschina.net/AbnerLee/blog/348998" target="_blank" rel="external">https://my.oschina.net/AbnerLee/blog/348998</a></p>
 <p>这种方法的优势在于方便，有xshell就能实现；但是实际使用时发现并不稳定，连接会经常断掉。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/24.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/24.png" alt="image"></p>
 <p>如上图所示，在有外网地址的服务器上搭一个流量转发工具（orange），将所有访问443或者80端口的流量（腾讯服务器只发送到这两个端口）转发到本地服务器的特定端口上，这样在本地起服务就能够进行调试了。本地服务器和有外网的服务器需要在同一网段里，才能进行转发。</p>
 <p>这种方法进行本地测试比较稳定，缺点在于本地服务和有外网的服务器需要在同一网段内，这个本身如果服务器没有公网ip，也需要做内网穿透。</p>
 ]]></content>
@@ -468,7 +468,7 @@
     <link href="http://yoursite.com/2018/08/28/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BC%80%E5%8F%91%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83/"/>
     <id>http://yoursite.com/2018/08/28/微信公众号开发（一）——搭建环境/</id>
     <published>2018-08-28T14:14:53.000Z</published>
-    <updated>2019-04-10T08:50:24.000Z</updated>
+    <updated>2020-03-03T13:34:56.997Z</updated>
     
     <content type="html"><![CDATA[<h2 id="1-基础环境"><a href="#1-基础环境" class="headerlink" title="1. 基础环境"></a>1. 基础环境</h2><ul>
 <li>微信公众号一个（我的是个人订阅号，不同的类型权限不同）</li>
@@ -496,7 +496,7 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python main.py 80</div></pre></td></tr></table></figure>
 <p>打开浏览器，输入服务器ip和路径，可以看到</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/15.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/15.png" alt="image"></p>
 <ul>
 <li>添加 handle.py</li>
 </ul>
@@ -506,8 +506,8 @@
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python main.py 80</div></pre></td></tr></table></figure>
 <h3 id="2-微信公众号配置"><a href="#2-微信公众号配置" class="headerlink" title="2. 微信公众号配置"></a>2. 微信公众号配置</h3><p>在开发 &gt; 基本配置中修改配置</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/17.png" alt="image"></p>
-<p><img src="http://39.105.210.20:8888/blog_pic/16.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/17.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/16.png" alt="image"></p>
 <p>其中的Token需要和服务器handle.py里的token一样。</p>
 <p>点击“提交”之后，如果验证成功，则配置成功。</p>
 ]]></content>
@@ -530,7 +530,7 @@
     <link href="http://yoursite.com/2018/08/28/mybatis%E4%BD%BF%E7%94%A8tips/"/>
     <id>http://yoursite.com/2018/08/28/mybatis使用tips/</id>
     <published>2018-08-28T14:00:15.000Z</published>
-    <updated>2019-04-10T08:48:42.000Z</updated>
+    <updated>2020-03-03T13:31:40.282Z</updated>
     
     <content type="html"><![CDATA[<p>mybatis作为一种灵活的orm框架，优点有目共睹：灵活！不管多复杂的查询，联表，多对多，联表count。。。只要能把sql语句写出来，就能查出来转成PO。然鹅，在使用的时候也充分暴露了，越是灵活的东西，越容易出bug。比如买个面包机，我只需要按照说明书，往里加面粉，酵母，糖等配料就行了，做出来的东西起码符合食物的最低标准——能吃！但是如果给你一个烤箱做面包，理论上你可以做各种形状各种口味的：牛角面包，吐司，法棍。。然而事实上，可能做出来的东西并不能称之为“食物”。mybatis就是一个烤箱，能做任何事情，又不能做任何事情。</p>
 <h2 id="1-搜索条件传入参数类型是Integer，Long"><a href="#1-搜索条件传入参数类型是Integer，Long" class="headerlink" title="1. 搜索条件传入参数类型是Integer，Long"></a>1. 搜索条件传入参数类型是Integer，Long</h2><p>例如枚举类型，前端传入的是枚举的名称，而数据库存的是枚举值对应的数字，我们的做法是，先找到枚举值对应的数字，然后用数字去数据库进行搜索。</p>
@@ -551,7 +551,7 @@
 <p>ExpressionEvaluator 类，通过OgnlCache.getValue(expression, parameterObject);可以看到表达式的值是从缓存中获取的，由此可知MyBatis竟然对表达式做了缓存，以提高性能。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExpressionEvaluator</span> </span>&#123;  </div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">evaluateBoolean</span><span class="params">(String expression, Object parameterObject)</span> </span>&#123;  </div><div class="line">    Object value = OgnlCache.getValue(expression, parameterObject);  </div><div class="line">    <span class="keyword">if</span> (value <span class="keyword">instanceof</span> Boolean) <span class="keyword">return</span> (Boolean) value;  </div><div class="line">    <span class="keyword">if</span> (value <span class="keyword">instanceof</span> Number) <span class="keyword">return</span> !<span class="keyword">new</span> BigDecimal(String.valueOf(value)).equals(BigDecimal.ZERO);  </div><div class="line">    <span class="keyword">return</span> value != <span class="keyword">null</span>;  </div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
 <p>解析表达式的方法private static Object parseExpression(String expression),该方法会先从缓存取值，如果没有便进行解析并放入缓存中，然后调用Ognl.getValue(parseExpression(expression), root)获得表达式的值。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OgnlCache</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, ognl.Node&gt; expressionCache = <span class="keyword">new</span> ConcurrentHashMap&lt;String, ognl.Node&gt;();</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getValue</span><span class="params">(String expression, Object root)</span> <span class="keyword">throws</span> OgnlException </span>&#123;</div><div class="line">    <span class="keyword">return</span> Ognl.getValue(parseExpression(expression), root);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Object <span class="title">parseExpression</span><span class="params">(String expression)</span> <span class="keyword">throws</span> OgnlException </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      Node node = expressionCache.get(expression);</div><div class="line">      <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</div><div class="line">        node = <span class="keyword">new</span> OgnlParser(<span class="keyword">new</span> StringReader(expression)).topLevelExpression();</div><div class="line">        expressionCache.put(expression, node);</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> node;</div><div class="line">    &#125; <span class="keyword">catch</span> (ParseException e) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> ExpressionSyntaxException(expression, e);</div><div class="line">    &#125; <span class="keyword">catch</span> (TokenMgrError e) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> ExpressionSyntaxException(expression, e);</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
 <p>MyBatis的表达式是用<a href="https://commons.apache.org/proper/commons-ognl/language-guide.html" target="_blank" rel="external">OGNL</a>处理的，OGNL的官网中对表达式返回Boolean类型有以下解释：</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/18.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/18.png" alt="image"></p>
 <p>如果对象是一个Number类型，值为0时将被解析为false，否则为true，浮点型0.00也是如此。</p>
 <p><if test="taskApplicationStatus != null and taskApplicationStatus != ''"><br>    and ta.task_application_status = #{taskApplicationStatus}<br></if><br>时出现的问题了， taskApplicationStatus != ‘’被解析为false,而’’被解析为false，因此taskApplicationStatus!=’’是不成立的，表达式的值为false，导致无法拼接搜索条件。一般只有传入为String类型的时候才需要判断是否为String != ‘’。</p>
 <p><strong>解决方法</strong></p>
@@ -682,7 +682,7 @@
     <link href="http://yoursite.com/2018/07/31/hibernate%E5%92%8Cmybatis%E6%9F%A5%E8%AF%A2%E5%AF%B9%E6%AF%94/"/>
     <id>http://yoursite.com/2018/07/31/hibernate和mybatis查询对比/</id>
     <published>2018-07-31T14:25:39.000Z</published>
-    <updated>2019-04-10T08:46:12.000Z</updated>
+    <updated>2020-03-03T13:34:40.154Z</updated>
     
     <content type="html"><![CDATA[<h3 id="1-实体中没有引用对象"><a href="#1-实体中没有引用对象" class="headerlink" title="1. 实体中没有引用对象"></a>1. 实体中没有引用对象</h3><h4 id="1-1-实体编写实例"><a href="#1-1-实体编写实例" class="headerlink" title="1.1 实体编写实例"></a>1.1 实体编写实例</h4><ol>
 <li>hibernate</li>
@@ -795,7 +795,7 @@
 </ul>
 <h4 id="3-3-建议"><a href="#3-3-建议" class="headerlink" title="3.3 建议"></a>3.3 建议</h4><p>此类查询建议使用hibernate完成，开发速度快，只需要设置实体的注解，mybatis需要join语句，还需要设置返回的resultMap但是执行效率上mybatis会更好一些，如果数据量大，就需要测试后选择。</p>
 <h3 id="4-两个实体间存在中间实体关联（多对多）"><a href="#4-两个实体间存在中间实体关联（多对多）" class="headerlink" title="4. 两个实体间存在中间实体关联（多对多）"></a>4. 两个实体间存在中间实体关联（多对多）</h3><h4 id="4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"><a href="#4-1-两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。" class="headerlink" title="4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。"></a>4.1 两张表与关系表OneToMany级联，关系表与两张表ManyToOne级联。</h4><p><strong>例1：</strong> 用户组与权限的关系，一个用户组可以拥有多个权限，一个权限又可包含多个用户组。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/new_15.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/new_15.png" alt="image"></p>
 <h5 id="4-1-1-实体编写示例"><a href="#4-1-1-实体编写示例" class="headerlink" title="4.1.1 实体编写示例"></a>4.1.1 实体编写示例</h5><ol>
 <li>hibernate</li>
 </ol>
@@ -819,7 +819,7 @@
 <li>正常sql语句的链表查询</li>
 </ul>
 <h4 id="4-2-两张表与关系表相对各自独立，没有完整级联"><a href="#4-2-两张表与关系表相对各自独立，没有完整级联" class="headerlink" title="4.2 两张表与关系表相对各自独立，没有完整级联"></a>4.2 两张表与关系表相对各自独立，没有完整级联</h4><p><strong>例2：</strong> 例如在translator中的，译员的母语和语言tag之间是多对多关系，tag是数据字典，初始化值后便不会改变。因为语言tag不仅母语需要使用，擅长语言这个属性也需要使用，所以中间表需要加字段“tag类型”用以区分是tag是被谁在使用。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/23.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/23.png" alt="image"></p>
 <h5 id="4-2-1-实体编写示例"><a href="#4-2-1-实体编写示例" class="headerlink" title="4.2.1 实体编写示例"></a>4.2.1 实体编写示例</h5><ol>
 <li>hibernate</li>
 </ol>
@@ -958,7 +958,7 @@
     <link href="http://yoursite.com/2017/11/30/Python2-7-pytesser%E6%8F%90%E5%8F%96%E5%9B%BE%E7%89%87%E4%B8%AD%E6%96%87%E5%AD%97%E4%BF%A1%E6%81%AF/"/>
     <id>http://yoursite.com/2017/11/30/Python2-7-pytesser提取图片中文字信息/</id>
     <published>2017-11-30T12:30:34.000Z</published>
-    <updated>2019-04-10T08:40:06.000Z</updated>
+    <updated>2020-03-03T13:27:52.797Z</updated>
     
     <content type="html"><![CDATA[<p>图片中存在大段的文字，用手敲实在是费劲。很多在线转换的工具，速度慢，并且达到一定次数后会收费。贫穷让我自力更生，查到python可以通过安装pytesseract库来进行文字识别。而pytesser调用了tesseract，因此还需要安装Tesseract-OCR软件（OCR：Optical Character Recognition，即光学字符识别技术，专门用于对图片文字进行识别，并获取文本。tesseract-ocr引擎先由HP实验室研发，后来成为一个开源项目，主要由google进行改进优化）。另外还需要用的图像处理库PIL库。</p>
 <p>网上相关资料很多，在安装过程中出现了很多问题，特将安装方法和遇到的问题做个记录，方便日后查阅。</p>
@@ -974,16 +974,16 @@
 <h3 id="2-3-安装Tesseract-OCR语言包配置"><a href="#2-3-安装Tesseract-OCR语言包配置" class="headerlink" title="2.3 安装Tesseract-OCR语言包配置"></a>2.3 安装Tesseract-OCR语言包配置</h3><p>默认安装的是eng英文语言包。如果需要对汉语进行提取，则需要安装汉语语言包。</p>
 <p>语言包下载地址：<a href="https://github.com/tesseract-ocr/tessdata" target="_blank" rel="external">https://github.com/tesseract-ocr/tessdata</a></p>
 <p>下载chi_sim.traineddata（中文简体），将其拷贝到/usr/local/Cellar/tesseract/3.05.01/share/tessdata下。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/9.jpeg" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/9.jpeg" alt="image"></p>
 <p>验证Tesseract-OCR：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">RosyMacBook-Pro:~ Rosy$ tesseract /Users/Rosy/Desktop/test.png /Users/Rosy/Desktop/test -l chi_sim</div><div class="line">Tesseract Open Source OCR Engine v3.05.01 with Leptonica</div><div class="line">RosyMacBook-Pro:~ Rosy$</div></pre></td></tr></table></figure>
 <p>其中 <em>-l</em> 表示识别的语言，test是输出到文件txt的名字。在指定路径下能够看到生成的txt文件。</p>
 <p>png格式的图片，提前其中的文字信息</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/10.png" alt="image"></p>
-<p>提取后的效果：<br><img src="http://39.105.210.20:8888/blog_pic/new_8.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/10.png" alt="image"></p>
+<p>提取后的效果：<br><img src="http://106.13.2.39:8888/blog_pic/new_8.png" alt="image"></p>
 <h2 id="3-python程序提取图片信息"><a href="#3-python程序提取图片信息" class="headerlink" title="3.python程序提取图片信息"></a>3.python程序提取图片信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#coding:utf-8</div><div class="line">import sys </div><div class="line">import pytesseract</div><div class="line">from PIL import Image</div><div class="line"></div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf-8&apos;)</div><div class="line">image = Image.open(&quot;/Users/Rosy/Desktop/test.png&quot;)</div><div class="line">text = pytesseract.image_to_string(image,lang=&apos;chi_sim&apos;) </div><div class="line">with open(&quot;/Users/Rosy/Desktop/output.txt&quot;, &quot;w&quot;) as f:</div><div class="line">    print(text)</div><div class="line">    f.write(str(text))</div></pre></td></tr></table></figure>
 <p>提取结果</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/new_9.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/new_9.png" alt="image"></p>
 <p>其中需要说明：</p>
 <ul>
 <li>import pytesseract报错如下</li>
@@ -999,7 +999,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import sys </div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf-8&apos;)</div></pre></td></tr></table></figure>
 <p>具体添加的位置见完整代码。</p>
 <p>另外，尝试了有背景花纹，颜色和背景接近和非正常字体的图片的文字提取信息。发现正常字体在颜色和背景接近的情况下，能够大致识别出文字信息，而在非正常字体的情况下几乎不能正确提前信息。见下图：</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/new_10.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/new_10.png" alt="image"></p>
 <p>另外，对图片的处理和对Tesseract-OCR语言包的训练，可以提高识别率，以后可能会继续研究。</p>
 ]]></content>
     
@@ -1023,20 +1023,20 @@
     <link href="http://yoursite.com/2017/11/30/docker%E9%87%8C%E7%94%A8tomcat8%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6/"/>
     <id>http://yoursite.com/2017/11/30/docker里用tomcat8下载文件/</id>
     <published>2017-11-30T12:30:04.000Z</published>
-    <updated>2019-04-10T08:20:06.000Z</updated>
+    <updated>2020-03-03T13:30:16.884Z</updated>
     
     <content type="html"><![CDATA[<p>在docker中启动Tomcat作为下载文件服务器，如果存在中文名的文件，则需要对docker的容器编码格式进行修改，使其能够支持中文，否则将无法在下载中文名文件。</p>
 <h2 id="1-修改docker容器编码格式"><a href="#1-修改docker容器编码格式" class="headerlink" title="1. 修改docker容器编码格式"></a>1. 修改docker容器编码格式</h2><p>直接启动docker容器，发现中文文件在里面显示为乱码</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/1.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/1.png" alt="image"></p>
 <p>查看docker容器编码格式，可以看到当前编码格式为POSIX，这种编码格式不支持中文.</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/2.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/2.png" alt="image"></p>
 <p>我们需要自己修改容器的编码格式。</p>
 <h3 id="1-1-安装中文语言包"><a href="#1-1-安装中文语言包" class="headerlink" title="1.1 安装中文语言包"></a>1.1 安装中文语言包</h3><p>查看容器所有的语言环境，如果没有中文语言包，则需要自己安装。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/3.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/3.png" alt="image"></p>
 <p>安装中文语言包：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@e0f34910ee74 /]# yum install glibc-common</div></pre></td></tr></table></figure>
 <p>安装好后再次查看语言包信息，出现中文语言包。</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/4.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/4.png" alt="image"></p>
 <h3 id="1-2-docker-build生成新的镜像"><a href="#1-2-docker-build生成新的镜像" class="headerlink" title="1.2 docker build生成新的镜像"></a>1.2 docker build生成新的镜像</h3><p>将下好语言包的容器commit成一个新的镜像</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@host-10-0-251-159 dockerbuild]# docker commit c2eb75865693 webcrawler-service:test</div></pre></td></tr></table></figure>
 <p>基于这个新镜像写一个Dockerfile，然后基于Dockerfile生成我们需要的镜像。<br>Dockerfile为</p>
@@ -1045,14 +1045,14 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@host-10-0-251-159 dockerbuild]# docker build -t webcrawler-service-new .</div></pre></td></tr></table></figure>
 <p>基于这个新镜像webcrawler-service-new启动一个容器，进入这个容器，我们可以看到容器编码为我们设置的zh_CN.UTF-8，生成一个新的中文名文件，不再出现乱码。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@host-10-0-251-159 /]# docker run -tid eec4bea /run.sh</div><div class="line">[root@host-10-0-251-159 /]# docker exec -ti eec4bea /bin/bash</div></pre></td></tr></table></figure>
-<p><img src="http://39.105.210.20:8888/blog_pic/5.png" alt="image"></p>
-<p><img src="http://39.105.210.20:8888/blog_pic/6.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/5.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/6.png" alt="image"></p>
 <h2 id="2-Tomcat8-HTTP文件下载文件"><a href="#2-Tomcat8-HTTP文件下载文件" class="headerlink" title="2. Tomcat8 HTTP文件下载文件"></a>2. Tomcat8 HTTP文件下载文件</h2><h3 id="2-1-修改Tomcat配置文件"><a href="#2-1-修改Tomcat配置文件" class="headerlink" title="2.1 修改Tomcat配置文件"></a>2.1 修改Tomcat配置文件</h3><p>在Tomcat安装目录下，修改web.xml文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[root@eec4bea40bab conf]# vi /usr/local/tomcat/conf/web.xml</div><div class="line">……</div><div class="line">    &lt;servlet&gt;</div><div class="line">        &lt;servlet-name&gt;default&lt;/servlet-name&gt;</div><div class="line">        &lt;servlet-class&gt;org.apache.catalina.servlets.DefaultServlet&lt;/servlet-class&gt;</div><div class="line">        &lt;init-param&gt;</div><div class="line">            &lt;param-name&gt;debug&lt;/param-name&gt;</div><div class="line">            &lt;param-value&gt;0&lt;/param-value&gt;</div><div class="line">        &lt;/init-param&gt;</div><div class="line">        &lt;init-param&gt;</div><div class="line">            &lt;param-name&gt;listings&lt;/param-name&gt;</div><div class="line">            &lt;param-value&gt;true&lt;/param-value&gt; （把原来的false改为true）</div><div class="line">        &lt;/init-param&gt;</div><div class="line">        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</div><div class="line">    &lt;/servlet&gt;</div><div class="line">……</div></pre></td></tr></table></figure>
 <h3 id="2-2-创建用于下载的xml文件"><a href="#2-2-创建用于下载的xml文件" class="headerlink" title="2.2 创建用于下载的xml文件"></a>2.2 创建用于下载的xml文件</h3><p>在安装目录下的conf/Catalina/localhost/下新建一个xml文件，用于访问下载列表。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@eec4bea40bab conf]# vi /usr/local/tomcat/conf/web.xml </div><div class="line">[root@eec4bea40bab conf]# cat /usr/local/tomcat/conf/Catalina/localhost/download.xml </div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;Context  reloadable=&quot;true&quot; docBase=&quot;/usr/download&quot; crossContext=&quot;true&quot;&gt;</div><div class="line">&lt;/Context&gt;</div></pre></td></tr></table></figure>
 <p>其中docBase的路径为对外暴露的下载路径，需要存在该路径。<br>docker容器，对外暴露需要访问的端口，浏览器访问，出现下载列表：</p>
-<p><img src="http://39.105.210.20:8888/blog_pic/7.png" alt="image"></p>
+<p><img src="http://106.13.2.39:8888/blog_pic/7.png" alt="image"></p>
 <p>因为有需求是文件名需要有中文。一开始中文出现乱码，导致无法下载文件。查阅了网上很多资料，都说是因为Tomcat默认的编码方式是iso8859-1，而iso8859-1不属于中文码表，故而出现乱码。建议修改server.xml文件，将编码方式修改为utf-8： <em>URIEncoding=”utf-8”</em>。我进行尝试后发现依然中文乱码。后来发现Tomcat8默认的编码已经是utf-8了，所以不需要修改server.xml文件 <strong>（如果从Tomcat早期版本迁移到Tomcat8需要注意这个问题）</strong>。后来多次测试，发现是系统环境的问题，如果系统本身不支持中文，则修改Tomcat后也不支持中文文件的下载，需要先修改系统环境语言。</p>
 ]]></content>
     
